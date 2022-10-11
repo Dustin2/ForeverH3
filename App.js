@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ManageAccount from "./screens/ManageAccount";
 import { Colors } from "./colors";
 import SettingsScreen from "./screens/SettingsScreen";
-import ChangeLocations from "./screens/ChangeLocations";
+import ChangeLocationsScreen from "./screens/ChangeLocationsScreen";
 import CaptureScreen from "./screens/CaptureScreen";
 const Stack = createNativeStackNavigator();
 
@@ -49,7 +49,7 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Locations" component={LocationsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="Changes" component={ChangeLocations} />
+        <Stack.Screen name="Changes" component={ChangeLocationsScreen} />
         <Stack.Screen name="Capture" component={CaptureScreen} />
         
       </Stack.Navigator>

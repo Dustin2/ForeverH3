@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const ChangeLocations = () => {
+const ChangeLocationsScreen = () => {
   return (
     <View>
       <Text>ChangeLocations</Text>
@@ -9,4 +9,4 @@ const ChangeLocations = () => {
   )
 }
 
-export default ChangeLocations
+export default ChangeLocationsScreen;

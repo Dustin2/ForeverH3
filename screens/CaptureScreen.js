@@ -26,7 +26,10 @@ LogBox.ignoreLogs(["Setting a timer"]);
 export default function CaptureScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-
+  const [dataScanned, setDataScanned] = useState([{
+    products:dataScanned
+  }]);
+  // const Data = [];
   /// use for permission to access camera and await access if granted continue
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -39,8 +42,12 @@ export default function CaptureScreen() {
 
   /// save data Scanned in state
   const handleSuccess = ({ type, data }) => {
-    setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    // setScanned(true);
+    //  console.log(`  data: ${data}`);
+    dataScanned.push({ data })
+    setDataScanned(dataScanned);
+
+    console.log(dataScanned);
   };
 
   if (hasPermission === null) {
@@ -52,12 +59,15 @@ export default function CaptureScreen() {
 
   return (
     <View style={styles.container}>
-    <BarCodeScanner
-      onBarCodeScanned={scanned ? undefined : handleSuccess}
-      style={StyleSheet.absoluteFillObject}
-    />
-    {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
-  </View>
+      <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleSuccess}
+        style={StyleSheet.absoluteFillObject}
+      />
+      {/* {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />} */}
+      {/* <View>
+        <Button>Guardar</Button>
+      </View> */}
+    </View>
   );
 }
 

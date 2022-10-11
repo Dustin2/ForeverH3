@@ -89,32 +89,33 @@ export default function Login({ navigation }) {
           Iniciar
         </Button>
         <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
-          <Text style={AppStyles.lightText}>Don't have an account? </Text>
-          <InlineTextButton
-            text="Sign Up"
+          <Text style={styles.text}>Don't have an account? </Text>
+
+          <Button
+            style={styles.button}
+            mode="contained"
+            buttonColor={Colors.primary}
+            dark={true}
             onPress={() => navigation.navigate("SignUp")}
-          />
+          >
+            Registarse
+          </Button>
         </View>
-        <View style={[AppStyles.rowContainer, AppStyles.bottomMargin]}>
-          <Text style={AppStyles.lightText}>Forgotten your password? </Text>
-          <InlineTextButton
-            text="Reset"
+        <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
+          <Button
+            style={styles.button}
+            mode="contained"
+            buttonColor={Colors.primary}
+            dark={true}
             onPress={() => navigation.navigate("ResetPassword")}
-          />
+          >
+            Forgotten your password?{" "}
+          </Button>
         </View>
-        <Button title="Login" onPress={login} color="#f7b267" />
+        {/* <Button title="Login" onPress={login} color="#f7b267" /> */}
       </View>
 
-      <View>
-        <Button
-          style={styles.button}
-          mode="contained"
-          buttonColor={Colors.primary}
-          dark={true}
-        >
-          Registarse
-        </Button>
-      </View>
+      <View></View>
     </View>
 
     /* <KeyboardAvoidingView 

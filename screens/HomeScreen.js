@@ -69,7 +69,7 @@ const HomeScreen = () => {
         <Button
           styles={styles.button}
           mode="contained"
-          onPress={() => navigation.navigate("Settings")}
+          onPress={() => navigation.navigate("Change")}
         >
           Configuracion
         </Button>
