@@ -52,7 +52,11 @@ const LocationsScreen = () => {
   };
 
   //saveNewUser
+<<<<<<< HEAD
   const saveNewLocation = () => {
+=======
+  const saveNewUser = () => {
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
     if (
       //   store.locations === "" ||
       store.levels === "" ||
@@ -86,7 +90,11 @@ const LocationsScreen = () => {
   ///sendData to firebase
   const sendData = async () => {
     console.log(store);
+<<<<<<< HEAD
     await addDoc(collection(db, "ubicaciones"), {
+=======
+    await addDoc(collection(db, "locations"), {
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
       storeName: auth.currentUser?.email,
       levels: store.levels,
       locations: store.locations,
@@ -106,7 +114,11 @@ const LocationsScreen = () => {
   const [selectedColony, setSelectedColony] = useState();
   const updatePickerColony = (colonySel, indexColony, name, value) => {
     handleChangeText("locations", colonySel);
+<<<<<<< HEAD
     setSelectedColony(colonySel);
+=======
+    setSelectedVehicle(colonySel);
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   };
   return (
     <ScrollView style={styles.container}>
@@ -192,7 +204,11 @@ const LocationsScreen = () => {
           color={"green"}
           style={styles.button}
           onPress={() => {
+<<<<<<< HEAD
             saveNewLocation();
+=======
+            saveNewUser();
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
           }}
         />
       </View>

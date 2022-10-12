@@ -10,7 +10,10 @@ import { Colors } from "./colors";
 import SettingsScreen from "./screens/SettingsScreen";
 import ChangeLocationsScreen from "./screens/ChangeLocationsScreen";
 import CaptureScreen from "./screens/CaptureScreen";
+<<<<<<< HEAD
 import HistoryScreen from "./screens/HistoryScreen";
+=======
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -52,7 +55,10 @@ export default function App() {
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="Changes" component={ChangeLocationsScreen} />
         <Stack.Screen name="Capture" component={CaptureScreen} />
+<<<<<<< HEAD
         <Stack.Screen name="Historial" component={HistoryScreen} />
+=======
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
         
       </Stack.Navigator>
     </NavigationContainer>

@@ -12,6 +12,10 @@ import { TextInput, Button } from "react-native-paper";
 ///Navigation
 import { useNavigation } from "@react-navigation/core";
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
 //Auth firebase
 import { auth } from "../firebase";
 
@@ -38,24 +42,35 @@ const HomeScreen = () => {
         </Text>
       </View>
       <View style={styles.inputGroup}>
+<<<<<<< HEAD
         <Button
           styles={{ marginBottom: 10 }}
           mode="contained"
           onPress={() => navigation.navigate("Locations")}
         >
+=======
+        <Button styles={{ marginBottom: 10 }} mode="contained"
+        onPress={()=>navigation.navigate("Locations")}>
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
           Ubicaciones
         </Button>
       </View>
       <View style={styles.inputGroup}>
+<<<<<<< HEAD
         <Button
           styles={{ marginBottom: 10 }}
           mode="contained"
           onPress={() => navigation.navigate("Capture")}
         >
+=======
+        <Button styles={{ marginBottom: 10 }} mode="contained"
+        onPress={()=>navigation.navigate("Capture")}>
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
           Captura
         </Button>
       </View>
       <View style={styles.inputGroup}>
+<<<<<<< HEAD
         <Button
           styles={styles.button}
           mode="contained"
@@ -74,12 +89,20 @@ const HomeScreen = () => {
         </Button>
         </View> */}
 
+=======
+        <Button styles={styles.button} mode="contained"
+         onPress={() => navigation.navigate("Changes")}>
+          Cambios
+        </Button>
+      </View>
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
       <View style={styles.inputGroup}>
         <Button
           styles={styles.button}
           mode="contained"
           onPress={() => navigation.navigate("Settings")}
         >
+<<<<<<< HEAD
           Configuracion
         </Button>
       </View>
@@ -92,6 +115,20 @@ const HomeScreen = () => {
           Historial
         </Button>
         </View>
+=======
+          Historial de cambios
+        </Button>
+        </View>
+        <View style={styles.inputGroup}>
+        <Button
+          styles={styles.button}
+          mode="contained"
+          onPress={() => navigation.navigate("Change")}
+        >
+          Configuracion
+        </Button>
+      </View>
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
     </ScrollView>
   );
 };

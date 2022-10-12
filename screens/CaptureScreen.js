@@ -3,11 +3,16 @@ import {
   Text,
   View,
   StyleSheet,
+<<<<<<< HEAD
+=======
+  Button,
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   ScrollView,
   Alert,
   ToastAndroid,
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+<<<<<<< HEAD
 import { TextInput, Button } from "react-native-paper";
 import { Colors } from "../colors";
 import { Picker } from "@react-native-picker/picker";
@@ -24,6 +29,14 @@ import {
   querySnapshot,
   doc,
 } from "firebase/firestore";
+=======
+import { TextInput } from "react-native-paper";
+
+//firebase
+
+import { db } from "../firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
 import { async } from "@firebase/util";
 import { LogBox } from "react-native";
 
@@ -33,6 +46,7 @@ import { useNavigation } from "@react-navigation/core";
 LogBox.ignoreLogs(["Setting a timer"]);
 
 export default function CaptureScreen() {
+<<<<<<< HEAD
   const [registeredLocation, setRegisteredLocation] = useState([]);
   useEffect(() => {
     const collectionRef = collection(db, "ubicaciones");
@@ -71,6 +85,14 @@ export default function CaptureScreen() {
     setSelectedColony(colonySel);
   };
 
+=======
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+  const [dataScanned, setDataScanned] = useState([{
+    products:dataScanned
+  }]);
+  // const Data = [];
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   /// use for permission to access camera and await access if granted continue
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -81,6 +103,19 @@ export default function CaptureScreen() {
     getBarCodeScannerPermissions();
   }, []);
 
+<<<<<<< HEAD
+=======
+  /// save data Scanned in state
+  const handleSuccess = ({ type, data }) => {
+    // setScanned(true);
+    //  console.log(`  data: ${data}`);
+    dataScanned.push({ data })
+    setDataScanned(dataScanned);
+
+    console.log(dataScanned);
+  };
+
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   if (hasPermission === null) {
     return <Text>Se requiere perimiso para acceder a la camara</Text>;
   }
@@ -88,6 +123,7 @@ export default function CaptureScreen() {
     return <Text>Permisos no otorgados</Text>;
   }
 
+<<<<<<< HEAD
   ///change value
   const handleChangeText = (data, value) => {
     setDataScanned([...dataScanned, ([data] = value)]);
@@ -207,6 +243,19 @@ export default function CaptureScreen() {
         </Button>
       </View>
     </ScrollView>
+=======
+  return (
+    <View style={styles.container}>
+      <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleSuccess}
+        style={StyleSheet.absoluteFillObject}
+      />
+      {/* {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />} */}
+      {/* <View>
+        <Button>Guardar</Button>
+      </View> */}
+    </View>
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   );
 }
 
@@ -214,12 +263,15 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     flex: 1,
+<<<<<<< HEAD
     // flexDirection: "column",
     // justifyContent: "center",
   },
   containerScanner: {
     backgroundColor: "#fff",
     // flex: 1,
+=======
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
     flexDirection: "column",
     justifyContent: "center",
   },
@@ -242,10 +294,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "black",
     textAlign: "center",
+<<<<<<< HEAD
     padding: 35,
     marginTop: 20,
   },
   button: {
     marginBottom: 10,
+=======
+>>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   },
 });
