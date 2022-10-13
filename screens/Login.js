@@ -6,9 +6,8 @@ import {
   Platform,
   StyleSheet,
 } from "react-native";
-import AppStyles from "../styles/AppStyles";
-import InlineTextButton from "../components/InlineTextButton";
-import React from "react";
+
+import React, { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { TextInput, Button } from "react-native-paper";
@@ -16,11 +15,6 @@ import { TextInput, Button } from "react-native-paper";
 ///externals dependences
 import { Colors } from "../colors";
 export default function Login({ navigation }) {
-<<<<<<< HEAD
-=======
-  const background = require("../assets/background.jpg");
-
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   if (auth.currentUser) {
     navigation.navigate("Home");
   } else {
@@ -31,9 +25,9 @@ export default function Login({ navigation }) {
     });
   }
 
-  let [errorMessage, setErrorMessage] = React.useState("");
-  let [email, setEmail] = React.useState("");
-  let [password, setPassword] = React.useState("");
+  let [errorMessage, setErrorMessage] = useState("");
+  let [email, setEmail] = useState("");
+  let [password, setPassword] = useState("");
 
   let login = () => {
     if (email !== "" && password !== "") {
@@ -91,12 +85,8 @@ export default function Login({ navigation }) {
         >
           Iniciar
         </Button>
-        <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
-<<<<<<< HEAD
+        <View>
           <Text style={styles.text}>No tienes cuenta? </Text>
-=======
-          <Text style={styles.text}>Don't have an account? </Text>
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
 
           <Button
             style={styles.button}
@@ -108,7 +98,7 @@ export default function Login({ navigation }) {
             Registarse
           </Button>
         </View>
-        <View style={[AppStyles.rowContainer, AppStyles.topMargin]}>
+        <View>
           <Button
             style={styles.button}
             mode="contained"
@@ -116,20 +106,11 @@ export default function Login({ navigation }) {
             dark={true}
             onPress={() => navigation.navigate("ResetPassword")}
           >
-<<<<<<< HEAD
             Olvidaste tu contrasena?
-=======
-            Forgotten your password?{" "}
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
           </Button>
         </View>
         {/* <Button title="Login" onPress={login} color="#f7b267" /> */}
       </View>
-
-<<<<<<< HEAD
-    </View>
-=======
-      <View></View>
     </View>
 
     /* <KeyboardAvoidingView 
@@ -153,7 +134,6 @@ export default function Login({ navigation }) {
           onChangeText={setPassword} />
        
       </KeyboardAvoidingView> */
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   );
 }
 

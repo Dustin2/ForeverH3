@@ -12,7 +12,7 @@ import {
 //External dependencies
 import { TextInput } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
-
+import { Colors } from "../colors";
 //Auth firebase
 import { auth } from "../firebase";
 import { db } from "../firebase";
@@ -52,11 +52,8 @@ const LocationsScreen = () => {
   };
 
   //saveNewUser
-<<<<<<< HEAD
+
   const saveNewLocation = () => {
-=======
-  const saveNewUser = () => {
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
     if (
       //   store.locations === "" ||
       store.levels === "" ||
@@ -90,11 +87,8 @@ const LocationsScreen = () => {
   ///sendData to firebase
   const sendData = async () => {
     console.log(store);
-<<<<<<< HEAD
+
     await addDoc(collection(db, "ubicaciones"), {
-=======
-    await addDoc(collection(db, "locations"), {
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
       storeName: auth.currentUser?.email,
       levels: store.levels,
       locations: store.locations,
@@ -114,28 +108,23 @@ const LocationsScreen = () => {
   const [selectedColony, setSelectedColony] = useState();
   const updatePickerColony = (colonySel, indexColony, name, value) => {
     handleChangeText("locations", colonySel);
-<<<<<<< HEAD
+
     setSelectedColony(colonySel);
-=======
-    setSelectedVehicle(colonySel);
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
   };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.inputGroup}>
         <Text style={styles.textInput}>{auth.currentUser?.email}</Text>
-        {/* <Picker
-          ref={pickerRef}
-          selectedValue={store}
-          onValueChange={(itemValue, itemIndex) => setStore(itemValue)}
-        >
-          <Picker.Item label="Selecciona la tienda" value="" enabled={false} />
-          <Picker.Item label="Chapala" value="Chapala" />
-          <Picker.Item label="Circunvalacion" value="Circunvalacion" />
-          <Picker.Item label="Juarez" value="Juarez" />
-          <Picker.Item label="Santa Fe" value="Santa Fe" />
-          <Picker.Item label="Isla" value="Isla" />
-        </Picker> */}
+      </View>
+      <View>
+        <TextInput
+          style={styles.TextInput}
+          activeOutlineColor={Colors.accent}
+          label={"Etiqueta"}
+          mode={"outlined"}
+          //value={{}}
+          
+        />
       </View>
       <View style={styles.inputGroup}>
         {/* <Text style={styles.textInput}> Ubicaciones Disponibles</Text> */}
@@ -169,20 +158,7 @@ const LocationsScreen = () => {
           }}
         />
       </View>
-      {/* <View>
-        <Text style={styles.textInput}>Tipo de Ubicacion</Text>
-        <Picker
-          ref={pickerRef}
-          selectedValue={store}
-          onValueChange={(itemValue, itemIndex) => setStore(itemValue)}
-        >
-          <Picker.Item label="Tipo de espacios" value="" enabled={false} />
-          <Picker.Item label="bachoco" value="bachoco" />
-          <Picker.Item label="piramide" value="piramide" />
-          <Picker.Item label="pared" value="pared" />
-          <Picker.Item label="Frente" value="pared" />
-        </Picker>
-      </View> */}
+
       <View style={styles.inputGroup}>
         <TextInput
           label={" espacios disponibles "}
@@ -195,6 +171,7 @@ const LocationsScreen = () => {
           }}
         />
       </View>
+
       {/* <View style={styles.inputGroup}>
         <Button title="Agregar " style={styles.button} />
       </View> */}
@@ -204,11 +181,7 @@ const LocationsScreen = () => {
           color={"green"}
           style={styles.button}
           onPress={() => {
-<<<<<<< HEAD
             saveNewLocation();
-=======
-            saveNewUser();
->>>>>>> 8299afbdeedb88061cf7933e5e3e88859e78f875
           }}
         />
       </View>
