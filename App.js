@@ -44,17 +44,21 @@ export default function App() {
           component={ResetPassword}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="ManageAccount"
           component={ManageAccount}
           options={{ headerShown: false }}
-        /> */}
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Locations" component={LocationsScreen} />
+        />
+        <Stack.Screen name="Inicio" component={HomeScreen} 
+        options={{
+          /// this use for don't show back button in initial screen
+          headerBackVisible : false,
+
+        }}/>
+        <Stack.Screen name="Ubicaciones" component={LocationsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="Changes" component={ChangeLocationsScreen} />
-        <Stack.Screen name="Capture" component={CaptureScreen} />
-
+        <Stack.Screen name="Escaneo de productos" component={CaptureScreen} />
         <Stack.Screen name="Historial" component={HistoryScreen} />
       </Stack.Navigator>
     </NavigationContainer>

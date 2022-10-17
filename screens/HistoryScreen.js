@@ -22,29 +22,48 @@ import { auth, db } from "../firebase";
 
 //external dependencies
 import { Colors } from "../colors";
+import moment from "moment";
+
 const HistoryScreen = () => {
   const [updates, setUpdates] = useState([]);
+  // useEffect(() => {
+  //   const collectionRef = collection(db, "Productos Escaneados");
+  //   const q = query(collectionRef, orderBy("createdDoc", "desc"));
+  //   const getData = [];
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     console.log("querySnapshot unsusbscribe");
+
+  //     querySnapshot.docs.map((doc) => {
+  //       const { storeName, products, createdDoc } = doc.data();
+  //       getData.push({
+  //         id: doc.id,
+  //         storeName,
+  //         products,
+  //         createdDoc,
+  //       });
+  //       // id: doc.id,
+  //       // storeName: doc.storeName,
+  //       // products: doc.products,
+  //       // createdDoc: doc.createdDoc,
+  //     });
+  //     setUpdates(getData);
+  //   });
+  //   return unsubscribe;
+  // }, []);
   useEffect(() => {
-    const collectionRef = collection(db, "Productos Escaneados");
+    const collectionRef = collection(db, "Cambios");
     const q = query(collectionRef, orderBy("createdDoc", "desc"));
-    const getData = [];
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       console.log("querySnapshot unsusbscribe");
-
-      querySnapshot.docs.map((doc) => {
-        const { storeName, products, createdDoc } = doc.data();
-        getData.push({
+      setUpdates(
+        querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          storeName,
-          products,
-          createdDoc,
-        });
-        // id: doc.id,
-        // storeName: doc.storeName,
-        // products: doc.products,
-        // createdDoc: doc.createdDoc,
-      });
-      setUpdates(getData);
+          currentLocation: doc.data().currentLocation,
+          newLocation: doc.data().newLocation,
+          products: doc.data().products,
+          createdDoc: doc.data().createdDoc,
+        }))
+      );
     });
     return unsubscribe;
   }, []);
@@ -56,7 +75,7 @@ const HistoryScreen = () => {
   return (
     <View styles={styles.container}>
       <SafeAreaView>
-        <ScrollView>
+        {/* <ScrollView>
           {updates.map((lastUpdates, index) => {
             return (
               <List.Section title={"Nombre de tienda"} key={lastUpdates.id}>
@@ -67,6 +86,34 @@ const HistoryScreen = () => {
                   <Text>{lastUpdates.createdDoc + "\n"}</Text>
                 </List.Accordion>
                 {console.log(lastUpdates)}
+              </List.Section>
+            );
+          })}
+        </ScrollView> */}
+        <ScrollView>
+          {updates.map((lastUpdates, index) => {
+            return (
+              <List.Section
+                title={
+                  "Ultima Actualizacion" +
+                  " " +
+                  lastUpdates.createdDoc.toDate().toLocaleTimeString("es-MX")
+                }
+                key={lastUpdates.id}
+              >
+                <List.Accordion title={lastUpdates.id}>
+                  <List.Item title={"Productos " + lastUpdates.products} />
+                  <List.Item
+                    title={
+                      "Localizacion Actual:" + " " + lastUpdates.currentLocation
+                    }
+                  />
+                  <List.Item
+                    title={
+                      "Localizacion Anterior:" + "" + lastUpdates.newLocation
+                    }
+                  />
+                </List.Accordion>
               </List.Section>
             );
           })}

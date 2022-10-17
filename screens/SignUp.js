@@ -41,7 +41,7 @@ export default function SignUp({ navigation }) {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           sendEmailVerification(auth.currentUser);
-          navigation.navigate("Home", { user: userCredential.user });
+          navigation.navigate("Inicio", { user: userCredential.user });
         })
         .catch((error) => {
           setValidationMessage(error.message);
@@ -55,7 +55,7 @@ export default function SignUp({ navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : null}
         keyboardVerticalOffset={60}
       >
-        <Text style={styles.title}>Sign Up</Text>
+        <Text style={styles.title}>Registarse</Text>
         <Text>{validationMessage}</Text>
         <TextInput
           label={"Correo"}

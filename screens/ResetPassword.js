@@ -38,7 +38,7 @@ export default function ResetPassword({ navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : null}
         keyboardVerticalOffset={60}
       >
-        <Text style={styles.title}>Reset Password</Text>
+        <Text style={styles.title}>Recuperar Contraseña</Text>
         <Text>{errorMessage}</Text>
         <TextInput
           style={styles.TextInput}

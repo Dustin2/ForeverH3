@@ -16,11 +16,11 @@ import { TextInput, Button } from "react-native-paper";
 import { Colors } from "../colors";
 export default function Login({ navigation }) {
   if (auth.currentUser) {
-    navigation.navigate("Home");
+    navigation.navigate("Inicio");
   } else {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigation.navigate("Home");
+        navigation.navigate("Inicio");
       }
     });
   }
@@ -33,7 +33,7 @@ export default function Login({ navigation }) {
     if (email !== "" && password !== "") {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          navigation.navigate("Home", { user: userCredential.user });
+          navigation.navigate("Inicio", { user: userCredential.user });
           setErrorMessage("");
           setEmail("");
           setPassword("");
@@ -83,10 +83,10 @@ export default function Login({ navigation }) {
           buttonColor={Colors.primary}
           onPress={login}
         >
-          Iniciar
+          Iniciar Sesion
         </Button>
         <View>
-          <Text style={styles.text}>No tienes cuenta? </Text>
+          <Text style={styles.text}>¿No tienes cuenta? </Text>
 
           <Button
             style={styles.button}

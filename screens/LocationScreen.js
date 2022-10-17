@@ -30,8 +30,8 @@ const LocationsScreen = () => {
   const initialState = {};
   const [store, setStore] = useState({
     locations: "",
-    spacePerLevel: "",
-    levels: "",
+    totalSpace: "",
+    customLabel: "",
     storeName: auth.currentUser?.email,
   });
   const navigation = useNavigation();
@@ -56,19 +56,20 @@ const LocationsScreen = () => {
   const saveNewLocation = () => {
     if (
       //   store.locations === "" ||
-      store.levels === "" ||
-      store.spacePerLevel === ""
+      store.totalSpace === "",
+      store.customLabel === "",
+      store.locations === ""
     ) {
       Alert.alert(
         "Error Campos invalidos",
-        "Porfavor copleta todos los campos"
+        "Porfavor completa todos los campos"
       );
     } else {
       Alert.alert("Confirmar", "Desea guardar los cambios actuales?", [
         {
           text: "Cancelar",
           onPress: () => ToastAndroid.show("cancel!", ToastAndroid.SHORT),
-          style: "cancel",
+          style: "cancelado",
         },
         {
           text: "Guardar",
@@ -90,15 +91,15 @@ const LocationsScreen = () => {
 
     await addDoc(collection(db, "ubicaciones"), {
       storeName: auth.currentUser?.email,
-      levels: store.levels,
       locations: store.locations,
-      spacePerLevel: store.spacePerLevel,
+     totalSpace: store.totalSpace,
+     customLabel: store.customLabel,
       createdDoc: new Date(),
     });
     // setState(initialState);
 
     ///use this change screen after save data
-    navigation.navigate("Home");
+    navigation.navigate("Inicio");
 
     ///serverTimestamp is used for save date to create document with firebase
   };
@@ -114,17 +115,7 @@ const LocationsScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.inputGroup}>
-        <Text style={styles.textInput}>{auth.currentUser?.email}</Text>
-      </View>
-      <View>
-        <TextInput
-          style={styles.TextInput}
-          activeOutlineColor={Colors.accent}
-          label={"Etiqueta"}
-          mode={"outlined"}
-          //value={{}}
-          
-        />
+        <Text style={styles.subTitle}>Sucursal: {auth.currentUser?.email}</Text>
       </View>
       <View style={styles.inputGroup}>
         {/* <Text style={styles.textInput}> Ubicaciones Disponibles</Text> */}
@@ -143,23 +134,36 @@ const LocationsScreen = () => {
           <Picker.Item label="bachoco" value="bachoco" />
           <Picker.Item label="piramide" value="piramide" />
           <Picker.Item label="pared" value="pared" />
-          <Picker.Item label="Frente" value="pared" />
+          {/* <Picker.Item label="Frente" value="pared" /> */}
         </Picker>
+      </View>
+      <View>
+        <TextInput
+          style={styles.TextInput}
+          activeOutlineColor={Colors.accent}
+          label={"Etiqueta"}
+          mode={"outlined"}
+          value={store.customLabel}
+          onChangeText={(value) => {
+            handleChangeText("customLabel", value);
+          }}
+        />
       </View>
       <View style={styles.inputGroup}>
         <TextInput
+          style={styles.TextInput}
+          activeOutlineColor={Colors.accent}
           label={"Ingresa el total de espacios "}
-          //   editable={false}
           mode={"outlined"}
-          value={store.spacePerLevel}
+          value={store.totalSpace}
           keyboardType={"numeric"}
           onChangeText={(value) => {
-            handleChangeText("spacePerLevel", value);
+            handleChangeText("totalSpace", value);
           }}
         />
       </View>
 
-      <View style={styles.inputGroup}>
+      {/* <View style={styles.inputGroup}>
         <TextInput
           label={" espacios disponibles "}
           //   editable={false}
@@ -170,7 +174,7 @@ const LocationsScreen = () => {
             handleChangeText("levels", value);
           }}
         />
-      </View>
+      </View> */}
 
       {/* <View style={styles.inputGroup}>
         <Button title="Agregar " style={styles.button} />
@@ -209,6 +213,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   textInput: { fontSize: 16 },
+  title: {
+    fontSize: 30,
+    color: "#181818",
+    fontWeight: "bold",
+  },
+  subTitle: {
+    fontSize: 20,
+    color: "gray",
+  },
 });
 
 export default LocationsScreen;

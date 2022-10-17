@@ -41,7 +41,7 @@ const HomeScreen = () => {
         <Button
           styles={{ marginBottom: 10 }}
           mode="contained"
-          onPress={() => navigation.navigate("Locations")}
+          onPress={() => navigation.navigate("Ubicaciones")}
         >
           Ubicaciones
         </Button>
@@ -50,9 +50,9 @@ const HomeScreen = () => {
         <Button
           styles={{ marginBottom: 10 }}
           mode="contained"
-          onPress={() => navigation.navigate("Capture")}
+          onPress={() => navigation.navigate("Escaneo de productos")}
         >
-          Captura
+          Escaneo de Productos
         </Button>
       </View>
       <View style={styles.inputGroup}>
@@ -64,15 +64,7 @@ const HomeScreen = () => {
           Cambios
         </Button>
       </View>
-      <View style={styles.inputGroup}>
-        <Button
-          styles={styles.button}
-          mode="contained"
-          onPress={() => navigation.navigate("Settings")}
-        >
-          Configuracion
-        </Button>
-      </View>
+
       <View style={styles.inputGroup}>
         <Button
           styles={styles.button}
@@ -82,6 +74,25 @@ const HomeScreen = () => {
           Historial
         </Button>
       </View>
+      <View style={styles.inputGroup}>
+        <Button
+          styles={styles.button}
+          mode="contained"
+          onPress={() => navigation.navigate("Settings")}
+        >
+          Configuracion
+        </Button>
+      </View>
+      {/* 
+      <View style={styles.inputGroup}>
+        <Button
+          styles={styles.button}
+          mode="contained"
+          onPress={() => navigation.navigate("ManageAccount")}
+        >
+          ManageAccount
+        </Button>
+      </View> */}
     </ScrollView>
   );
 };
