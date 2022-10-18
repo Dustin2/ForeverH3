@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { TextInput, Button } from "react-native-paper";
+import { unstable_createElement as createElement } from 'react-native-web'; 
 
 ///externals dependences
 import { Colors } from "../colors";

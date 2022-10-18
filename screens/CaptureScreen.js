@@ -66,13 +66,11 @@ export default function CaptureScreen() {
   }, []);
 
   ///use for expanded accordion
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
 
-  // const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(false);
+  //data saved in state
   const [dataScanned, setDataScanned] = useState([]);
-
   //update picker data
   const [selectedColony, setSelectedColony] = useState([]);
   const DataSelected = [];
@@ -87,6 +85,73 @@ export default function CaptureScreen() {
     setDataScanned([{ ...dataScanned, [data]: value }]);
     //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
   };
+  /// barcode
+  const dataScannedd = [];
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scannedd, setScannedd] = useState(false);
+  const [data, setData] = useState(dataScannedd);
+
+  useEffect(() => {
+    const getBarCodeScannerPermissions = async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+    };
+
+    getBarCodeScannerPermissions();
+  }, []);
+
+  const handleSuccess = ({ type, data }) => {
+    dataScannedd.push( "Producto Escaneado :" + " " + data );
+     //setData(dataScannedd);
+    setScannedd(true);
+    // console.log(data);
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+  };
+
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
+  const saveNewProductScan = () => {
+    if (
+      //   store.locations === "" ||
+      dataScanned === ""
+    ) {
+      Alert.alert("Error Campos vacios", "No se ha escaneado aun");
+    } else {
+      Alert.alert("Confirmar", "Desea guardar los cambios actuales?", [
+        {
+          text: "Cancelar",
+          onPress: () => ToastAndroid.show("cancel!", ToastAndroid.SHORT),
+          style: "cancel",
+        },
+        {
+          text: "Guardar",
+          onPress: () => (
+            sendData(),
+            ToastAndroid.show(
+              "Ubicacion registrada con exito!",
+              ToastAndroid.SHORT
+            )
+          ),
+          style: "success",
+        },
+      ]);
+    }
+  }; //end saveNewUser
+  ///sendData to firebase
+  const sendData = async () => {
+    console.log(dataScanned);
+    await addDoc(collection(db, "Productos Escaneados"), {
+      storeName: auth.currentUser?.email,
+      info:dataScanned,
+      products:  data ,
+      createdDoc: new Date(),
+    });
+    // setState(initialState);
   // /// use for permission to access camera and await access if granted continue
   // useEffect(() => {
   //   const getBarCodeScannerPermissions = async () => {
@@ -94,82 +159,17 @@ export default function CaptureScreen() {
   //     setHasPermission(status === "granted");
   //   };
 
-  //   getBarCodeScannerPermissions();
-  // }, []);
-
-  // /// save data Scanned in state
-  // const handleSuccess = ({ type, data }) => {
-  //   // setScanned(true);
-  //   //  console.log(`  data: ${data}`);
-  //   // dataScanned.push({ data });
-  //   if (product.includes(data)) {
-  //     Alert.alert(
-  //       "producto duplicado",
-  //       "  vuelva a escanear un producto valido"
-  //     );
-  //   } else {
-  //   }
-
-  //   Data.push("Producto Escaneado :" + " " + data);
-  //   //  setDataScanned();
-
-  //   // console.log(dataScanned);
-  // };
-  // //saveNewUser
-  // const saveNewProductScan = () => {
-  //   if (
-  //     //   store.locations === "" ||
-  //     dataScanned === ""
-  //   ) {
-  //     Alert.alert("Error Campos vacios", "No se ha escaneado aun");
-  //   } else {
-  //     Alert.alert("Confirmar", "Desea guardar los cambios actuales?", [
-  //       {
-  //         text: "Cancelar",
-  //         onPress: () => ToastAndroid.show("cancel!", ToastAndroid.SHORT),
-  //         style: "cancel",
-  //       },
-  //       {
-  //         text: "Guardar",
-  //         onPress: () => (
-  //           sendData(),
-  //           ToastAndroid.show(
-  //             "Ubicacion registrada con exito!",
-  //             ToastAndroid.SHORT
-  //           )
-  //         ),
-  //         style: "success",
-  //       },
-  //     ]);
-  //   }
-  // }; //end saveNewUser
-  // ///sendData to firebase
-  // const sendData = async () => {
-  //   console.log(dataScanned);
-  //   await addDoc(collection(db, "Productos Escaneados"), {
-  //     storeName: auth.currentUser?.email,
-  //     location: selectedColony,
-  //     products: Data,
-  //     createdDoc: new Date(),
-  //   });
-  //   // setState(initialState);
-
-  //   ///use this change screen after save data
-  //   navigation.navigate("Home");
-
-  //   ///serverTimestamp is used for save date to create document with firebase
-  // };
-  // /// sendData
-
+    ///use this change screen after save data
+    navigation.navigate("Inicio");
+  }
   return (
     <ScrollView style={styles.container}>
-      <View style={{ marginBottom: 30, marginTop: 30 }}>
+      <View style={styles.inputGroup}>
         <Picker
           selectedValue={selectedColony}
           onValueChange={(colonySel, indexColony, name, value) =>
             updatePickerColony(colonySel, indexColony, name, value)
           }
-          //value={store.locations}
         >
           <Picker.Item
             label="Selecciona la de ubicacion"
@@ -194,46 +194,59 @@ export default function CaptureScreen() {
         </Picker>
       </View>
       <View>
-        {/* <BarCodeScanner
-            onBarCodeScanned={scanned ? undefined : handleSuccess}
-            // style={StyleSheet.absoluteFillObject}
-          height={400}
-          width={400}
-        /> */}
-      </View>
-      {/* <View style={{ marginBottom: 15 }}>
-        {dataScanned.map((items, index) => {
-          return (
-            <TextInput
-              disabled={true}
-              mode={"outlined"}
-               placeholder={"Productos escaneados:"+{items}}
-              values={dataScanned}
-              multiline={true}
-              onChangeText={(value) => {
-                handleChangeText("product", value);
-              }}
-              key={index}
-            />
-          );
-        })}
-        {console.log({dataScanned})}
-      </View> */}
-      <View>
         <List.Section title="Datos de la ubicacion seleccionada">
           <List.Accordion
             title=" Datos"
             left={(props) => <List.Icon {...props} icon="folder" />}
           >
-            <TextInput disabled={true}>{"ID: "+selectedColony.id}</TextInput>
-            <TextInput disabled={true}>{"Ubicacion: "+selectedColony.location}</TextInput>
-            <TextInput disabled={true}>{"Etiqueta: "+selectedColony.label}</TextInput>
-            <TextInput disabled={true}>{"Espacio Disponible: "+selectedColony.totalSpace}</TextInput>
+            <TextInput disabled={true}>{"ID: " + selectedColony.id}</TextInput>
+            <TextInput disabled={true}>
+              {"Ubicacion: " + selectedColony.location}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Etiqueta: " + selectedColony.label}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Espacio Disponible: " + selectedColony.totalSpace}
+            </TextInput>
             {/* <TextInput disabled={true}>{selectedColony.createdDoc}</TextInput> */}
           </List.Accordion>
         </List.Section>
+        <List.Section title="Datos a escanear">
+          <List.Accordion title=" Datos">
+            {/* <List.Item title="" ></List.Item> */}
+            <BarCodeScanner
+              onBarCodeScanned={scannedd ? undefined : handleSuccess}
+              // style={StyleSheet.absoluteFillObject}
+              height={400}
+              width={370}
+            />
+            {scannedd && (
+              <Button
+                mode="contained"
+                buttonColor={Colors.success}
+                onPress={() => {
+                  setScannedd(false);
+                }}
+              >
+                Escanear de nuevo
+              </Button>
+            )}
+            {/* <TextInput
+             // disabled={true}
+              mode={"outlined"}
+              label={"Productos escaneados:"}
+              values={dataScanned}
+              multiline={true}
+              onChangeText={(value) => {
+                handleChangeText("product", value);
+              }}
+            /> */}
+          </List.Accordion>
+        </List.Section>
       </View>
-      <View>
+
+      <View style={styles.inputGroup}>
         <Button
           mode="contained"
           buttonColor={Colors.success}
@@ -249,8 +262,8 @@ export default function CaptureScreen() {
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     flex: 1,
+    padding: 20,
 
     // flexDirection: "column",
     // justifyContent: "center",
@@ -285,5 +298,16 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 10,
+  },
+  inputGroup: {
+    flex: 1,
+    padding: 1,
+    marginBottom: 10,
+    borderBottomColor: "#cccccc",
+    fontSize: 17,
+    marginBottom: 10,
+    marginEnd: 10,
+    marginBottom: 30,
+    marginTop: 30,
   },
 });

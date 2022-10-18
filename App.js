@@ -10,7 +10,6 @@ import { Colors } from "./colors";
 import SettingsScreen from "./screens/SettingsScreen";
 import ChangeLocationsScreen from "./screens/ChangeLocationsScreen";
 import CaptureScreen from "./screens/CaptureScreen";
-
 import HistoryScreen from "./screens/HistoryScreen";
 
 const Stack = createNativeStackNavigator();
@@ -49,12 +48,14 @@ export default function App() {
           component={ManageAccount}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Inicio" component={HomeScreen} 
-        options={{
-          /// this use for don't show back button in initial screen
-          headerBackVisible : false,
-
-        }}/>
+        <Stack.Screen
+          name="Inicio"
+          component={HomeScreen}
+          options={{
+            /// this use for don't show back button in initial screen
+            headerBackVisible: false,
+          }}
+        />
         <Stack.Screen name="Ubicaciones" component={LocationsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="Changes" component={ChangeLocationsScreen} />
