@@ -82,14 +82,13 @@ export default function CaptureScreen() {
 
   ///change value
   const handleChangeText = (data, value) => {
-    setDataScanned([{ ...dataScanned, [data]: value }]);
+    setDataScanned([{ [data]: value }]);
     //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
   };
   /// barcode
-  const dataScannedd = [];
   const [hasPermission, setHasPermission] = useState(null);
   const [scannedd, setScannedd] = useState(false);
-  const [data, setData] = useState(dataScannedd);
+  const [Data, setData] = useState([]);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -101,9 +100,17 @@ export default function CaptureScreen() {
   }, []);
 
   const handleSuccess = ({ type, data }) => {
-    dataScannedd.push( "Producto Escaneado :" + " " + data );
-     //setData(dataScannedd);
-    setScannedd(true);
+    //setData(dataScannedd);
+    
+  setData([...Data,data])
+  setScannedd(true);
+  // setData([...data,data ])
+  // console.log(data)
+    // const addProducts = {
+    //   codeProduct: data,
+    // }
+    // setData([...data, addProducts])
+    // console.log(addProducts)
     // console.log(data);
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
@@ -147,21 +154,21 @@ export default function CaptureScreen() {
     console.log(dataScanned);
     await addDoc(collection(db, "Productos Escaneados"), {
       storeName: auth.currentUser?.email,
-      info:dataScanned,
-      products:  data ,
+      info: dataScanned,
+      products: Data,
       createdDoc: new Date(),
     });
     // setState(initialState);
-  // /// use for permission to access camera and await access if granted continue
-  // useEffect(() => {
-  //   const getBarCodeScannerPermissions = async () => {
-  //     const { status } = await BarCodeScanner.requestPermissionsAsync();
-  //     setHasPermission(status === "granted");
-  //   };
+    // /// use for permission to access camera and await access if granted continue
+    // useEffect(() => {
+    //   const getBarCodeScannerPermissions = async () => {
+    //     const { status } = await BarCodeScanner.requestPermissionsAsync();
+    //     setHasPermission(status === "granted");
+    //   };
 
     ///use this change screen after save data
     navigation.navigate("Inicio");
-  }
+  };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.inputGroup}>
@@ -232,18 +239,13 @@ export default function CaptureScreen() {
                 Escanear de nuevo
               </Button>
             )}
-            {/* <TextInput
-             // disabled={true}
-              mode={"outlined"}
-              label={"Productos escaneados:"}
-              values={dataScanned}
-              multiline={true}
-              onChangeText={(value) => {
-                handleChangeText("product", value);
-              }}
-            /> */}
           </List.Accordion>
         </List.Section>
+        {Data.map((items,index)=>{
+          return (
+            <TextInput key={index}>{items+index}</TextInput>
+          )
+        })}
       </View>
 
       <View style={styles.inputGroup}>
