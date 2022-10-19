@@ -107,7 +107,7 @@ export default function Login({ navigation }) {
             dark={true}
             onPress={() => navigation.navigate("ResetPassword")}
           >
-            Olvidaste tu contrasena?
+            ¿ Olvidaste tu contraseña?
           </Button>
         </View>
         {/* <Button title="Login" onPress={login} color="#f7b267" /> */}

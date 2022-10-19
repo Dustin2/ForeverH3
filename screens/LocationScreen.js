@@ -1,50 +1,76 @@
 ///Dependencies
-import react, { useState, useRef } from "react";
+import react, { useState, useRef, useEffect } from "react";
 import {
   View,
   StyleSheet,
   ScrollView,
-  Button,
   Text,
   Alert,
   ToastAndroid,
 } from "react-native";
 //External dependencies
-import { TextInput } from "react-native-paper";
+import { TextInput, Button } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import { Colors } from "../colors";
-//Auth firebase
-import { auth } from "../firebase";
-import { db } from "../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { async } from "@firebase/util";
-import { LogBox } from "react-native";
 
+//Auth firebase
+import { auth, db } from "../firebase";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  serverTimestamp,
+  querySnapshot,
+  doc,
+} from "firebase/firestore";
+/// this delate alert of warning of time firebase
+
+import { LogBox } from "react-native";
+// import { async } from "@firebase/util";
 //navigation
 import { useNavigation } from "@react-navigation/core";
 
 LogBox.ignoreLogs(["Setting a timer"]);
 
 const LocationsScreen = () => {
+  ///hook for get data from firebase
+  const [registeredLocation, setRegisteredLocation] = useState([]);
+  useEffect(() => {
+    const collectionRef = collection(db, "ubicaciones");
+    const q = query(collectionRef, orderBy("createdDoc"));
+    const getRegisteredLocation = [];
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      console.log("querySnapshot unsusbscribe");
+
+      querySnapshot.docs.map((doc) => {
+        const { createdDoc, locations, totalSpace, customLabel, storeName } =
+          doc.data();
+        getRegisteredLocation.push({
+          id: doc.id,
+          locations,
+          totalSpace,
+          customLabel,
+          storeName,
+          createdDoc,
+        });
+      });
+      setRegisteredLocation(getRegisteredLocation);
+    });
+    return unsubscribe;
+  }, []);
+
   //state
-  const initialState = {};
   const [store, setStore] = useState({
     locations: "",
     totalSpace: "",
     customLabel: "",
+    spacesAvailable: "",
     storeName: auth.currentUser?.email,
+    kindOfSpace: "",
   });
   const navigation = useNavigation();
-
-  //   const pickerRef = useRef();
-
-  //   function open() {
-  //     pickerRef.current.focus();
-  //   }
-
-  //   function close() {
-  //     pickerRef.current.blur();
-  //   }
 
   const handleChangeText = (name, value) => {
     setStore({ ...store, [name]: value });
@@ -54,11 +80,14 @@ const LocationsScreen = () => {
   //saveNewUser
 
   const saveNewLocation = () => {
+    // registeredLocation.find((location) => {
+    //   return console.log(location + "Exist");
+    // });
+    // locationsExist();
     if (
-      //   store.locations === "" ||
-      store.totalSpace === "",
+      (store.locations === "" || store.totalSpace === "",
       store.customLabel === "",
-      store.locations === ""
+      store.locations === "")
     ) {
       Alert.alert(
         "Error Campos invalidos",
@@ -90,11 +119,13 @@ const LocationsScreen = () => {
     console.log(store);
 
     await addDoc(collection(db, "ubicaciones"), {
-      storeName: auth.currentUser?.email,
-      locations: store.locations,
-     totalSpace: store.totalSpace,
-     customLabel: store.customLabel,
-      createdDoc: new Date(),
+      Sucursal: auth.currentUser?.email,
+      ClaseTipo: store.locations,
+      EspacioTotal: store.totalSpace,
+      EspaciosDisponibles:  store.totalSpace,
+      TipoDeEspacios: store.kindOfSpace,
+      Etiqueta: store.customLabel,
+      FechaCreacion: new Date(),
     });
     // setState(initialState);
 
@@ -105,39 +136,69 @@ const LocationsScreen = () => {
   };
   /// sendData
 
-  ///Update Colony
+  ///Update picker location
   const [selectedColony, setSelectedColony] = useState();
   const updatePickerColony = (colonySel, indexColony, name, value) => {
     handleChangeText("locations", colonySel);
 
     setSelectedColony(colonySel);
   };
+
+  ///Update picker kind of space
+  const [selectedColony1, setSelectedColony1] = useState();
+  const updatePickerColony1 = (colonySel1, indexColony1, name, value) => {
+    handleChangeText("kindOfSpace", colonySel1);
+
+    setSelectedColony1(colonySel1);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.inputGroup}>
         <Text style={styles.subTitle}>Sucursal: {auth.currentUser?.email}</Text>
       </View>
+      {/* picker locations */}
       <View style={styles.inputGroup}>
-        {/* <Text style={styles.textInput}> Ubicaciones Disponibles</Text> */}
         <Picker
           selectedValue={selectedColony}
           onValueChange={(colonySel, indexColony, name, value) =>
             updatePickerColony(colonySel, indexColony, name, value)
           }
           value={store.locations}
+          mode={"dialog"}
         >
           <Picker.Item
             label="Selecciona el tipo de ubicacion"
             value=""
             enabled={false}
           />
-          <Picker.Item label="bachoco" value="bachoco" />
+          <Picker.Item label="Anaquel" value="Anaquel" />
+          <Picker.Item label="Carrusel" value="Carrusel" />
+          <Picker.Item label="Pared" value="Pared" />
           <Picker.Item label="piramide" value="piramide" />
-          <Picker.Item label="pared" value="pared" />
-          {/* <Picker.Item label="Frente" value="pared" /> */}
         </Picker>
       </View>
-      <View>
+      {/* picker tipo de espacios */}
+      <View style={styles.inputGroup}>
+        <Picker
+          selectedValue={selectedColony1}
+          onValueChange={(colonySel1, indexColony1, name, value) =>
+            updatePickerColony1(colonySel1, indexColony1, name, value)
+          }
+          value={store.kindOfSpace}
+          mode={"dialog"}
+        >
+          <Picker.Item
+            label="Selecciona el tipo de espacio"
+            value=""
+            enabled={false}
+          />
+          <Picker.Item label="Bachoco" value="Bachoco" />
+          <Picker.Item label="Gancho" value="Gancho" />
+          <Picker.Item label="Area" value="Area" />
+        </Picker>
+      </View>
+      <View style={styles.inputGroup}>
         <TextInput
           style={styles.TextInput}
           activeOutlineColor={Colors.accent}
@@ -162,32 +223,18 @@ const LocationsScreen = () => {
           }}
         />
       </View>
-
-      {/* <View style={styles.inputGroup}>
-        <TextInput
-          label={" espacios disponibles "}
-          //   editable={false}
-          mode={"outlined"}
-          value={store.levels}
-          keyboardType={"numeric"}
-          onChangeText={(value) => {
-            handleChangeText("levels", value);
-          }}
-        />
-      </View> */}
-
-      {/* <View style={styles.inputGroup}>
-        <Button title="Agregar " style={styles.button} />
-      </View> */}
       <View style={styles.inputGroup}>
         <Button
-          title="Guardar "
-          color={"green"}
+          mode="contained"
+          buttonColor={Colors.success}
+          //color={"green"}
           style={styles.button}
           onPress={() => {
             saveNewLocation();
           }}
-        />
+        >
+          Guardar
+        </Button>
       </View>
     </ScrollView>
   );
@@ -210,7 +257,8 @@ const styles = StyleSheet.create({
     marginEnd: 10,
   },
   button: {
-    marginBottom: 10,
+    marginTop: 15,
+    marginBottom: 15,
   },
   textInput: { fontSize: 16 },
   title: {

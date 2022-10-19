@@ -42,18 +42,29 @@ export default function CaptureScreen() {
   const [registeredLocation, setRegisteredLocation] = useState([]);
   useEffect(() => {
     const collectionRef = collection(db, "ubicaciones");
-    const q = query(collectionRef, orderBy("createdDoc"));
+    const q = query(collectionRef, orderBy("FechaCreacion"));
     const getRegisteredLocation = [];
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       console.log("querySnapshot unsusbscribe");
       querySnapshot.docs.map((doc) => {
-        const { locations, customLabel, totalSpace, createdDoc } = doc.data();
+        const {
+          Sucursal,
+          ClaseTipo,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
+          FechaCreacion,
+        } = doc.data();
         getRegisteredLocation.push({
-          id: doc.id,
-          customLabel,
-          locations,
-          totalSpace: totalSpace,
-          createdDoc,
+          ID: doc.id,
+          Sucursal,
+          ClaseTipo,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
+          FechaCreacion,
         });
         // id: doc.id,
         // storeName: doc.storeName,
@@ -75,9 +86,9 @@ export default function CaptureScreen() {
   const [selectedColony, setSelectedColony] = useState([]);
   const DataSelected = [];
   const updatePickerColony = (colonySel, indexColony, name, value) => {
-    handleChangeText("locations", colonySel);
+    handleChangeText("ss", colonySel);
     setSelectedColony(colonySel);
-    DataSelected.push(selectedColony);
+    // setDataScanned(selectedColony);
   };
 
   ///change value
@@ -101,11 +112,11 @@ export default function CaptureScreen() {
 
   const handleSuccess = ({ type, data }) => {
     //setData(dataScannedd);
-    
-  setData([...Data,data])
-  setScannedd(true);
-  // setData([...data,data ])
-  // console.log(data)
+
+    setData([...Data, data]);
+    setScannedd(true);
+    // setData([...data,data ])
+    // console.log(data)
     // const addProducts = {
     //   codeProduct: data,
     // }
@@ -113,6 +124,12 @@ export default function CaptureScreen() {
     // console.log(addProducts)
     // console.log(data);
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+
+    //   if (Data.lengt >= getRegisteredLocation.totalSpace) {
+    //     Alert.alert("no es posible escanear de nuevo");
+    //   } else {
+    //     // Alert.alert("aun puede escanear")
+    //   }
   };
 
   if (hasPermission === null) {
@@ -139,8 +156,9 @@ export default function CaptureScreen() {
           text: "Guardar",
           onPress: () => (
             sendData(),
+            console.log(dataScanned),
             ToastAndroid.show(
-              "Ubicacion registrada con exito!",
+              "Articulos  registrados con exito!",
               ToastAndroid.SHORT
             )
           ),
@@ -152,76 +170,78 @@ export default function CaptureScreen() {
   ///sendData to firebase
   const sendData = async () => {
     console.log(dataScanned);
-    await addDoc(collection(db, "Productos Escaneados"), {
-      storeName: auth.currentUser?.email,
-      info: dataScanned,
-      products: Data,
-      createdDoc: new Date(),
+    await addDoc(collection(db, "articulos"), {
+      Sucursal: auth.currentUser?.email,
+      Datos: selectedColony,
+      Articulos: Data,
+      FechaCreacion: new Date(),
     });
-    // setState(initialState);
-    // /// use for permission to access camera and await access if granted continue
-    // useEffect(() => {
-    //   const getBarCodeScannerPermissions = async () => {
-    //     const { status } = await BarCodeScanner.requestPermissionsAsync();
-    //     setHasPermission(status === "granted");
-    //   };
 
     ///use this change screen after save data
     navigation.navigate("Inicio");
   };
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.inputGroup}>
-        <Picker
-          selectedValue={selectedColony}
-          onValueChange={(colonySel, indexColony, name, value) =>
-            updatePickerColony(colonySel, indexColony, name, value)
-          }
-        >
-          <Picker.Item
-            label="Selecciona la de ubicacion"
-            value=""
-            enabled={false}
-          />
-          {registeredLocation.map((location) => {
-            return (
-              <Picker.Item
-                label={location.locations + " (" + location.customLabel + ")"}
-                value={{
-                  id: location.id,
-                  location: location.locations,
-                  label: location.customLabel,
-                  totalSpace: location.totalSpace,
-                  createdDoc: location.createdDoc,
-                }}
-                key={location.id}
-              />
-            );
-          })}
-        </Picker>
-      </View>
       <View>
         <List.Section title="Datos de la ubicacion seleccionada">
-          <List.Accordion
-            title=" Datos"
-            left={(props) => <List.Icon {...props} icon="folder" />}
-          >
-            <TextInput disabled={true}>{"ID: " + selectedColony.id}</TextInput>
+          <List.Accordion title=" Datos">
+            <Picker
+              selectedValue={selectedColony}
+              onValueChange={(colonySel, indexColony, name, value) =>
+                updatePickerColony(colonySel, indexColony, name, value)
+              }
+            >
+              <Picker.Item
+                label="Selecciona la de ubicacion"
+                value=""
+                enabled={false}
+              />
+              {registeredLocation.map((location) => {
+                return (
+                  <Picker.Item
+                    label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
+                    value={{
+                      ID: location.ID,
+                      Sucursal: location.Sucursal,
+                      ClaseTipo: location.ClaseTipo,
+                      EspacioTotal: location.EspacioTotal,
+                      EspaciosDisponibles: location.EspaciosDisponibles,
+                      TipoDeEspacios: location.TipoDeEspacios,
+                      Etiqueta: location.Etiqueta,
+                      FechaCreacion: location.FechaCreacion,
+                    }}
+                    key={location.ID}
+                  />
+                );
+              })}
+            </Picker>
+            <TextInput disabled={true}>{"ID: " + selectedColony.ID}</TextInput>
             <TextInput disabled={true}>
-              {"Ubicacion: " + selectedColony.location}
+              {"ClaseTipo: " +
+                selectedColony.ClaseTipo +
+                " (" +
+                selectedColony.Etiqueta +
+                " )"}
             </TextInput>
             <TextInput disabled={true}>
-              {"Etiqueta: " + selectedColony.label}
+              {"Tipo de Espacio : " + selectedColony.TipoDeEspacios}
             </TextInput>
             <TextInput disabled={true}>
-              {"Espacio Disponible: " + selectedColony.totalSpace}
+              {"Espacio Total: " + selectedColony.EspacioTotal}
             </TextInput>
+            <TextInput disabled={true}>
+              {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
+            </TextInput>
+            {/* 
+            <TextInput disabled={true}>
+              {"Fecha de creacion: " + selectedColony.FechaCreacion}
+            </TextInput> */}
+
             {/* <TextInput disabled={true}>{selectedColony.createdDoc}</TextInput> */}
           </List.Accordion>
         </List.Section>
         <List.Section title="Datos a escanear">
           <List.Accordion title=" Datos">
-            {/* <List.Item title="" ></List.Item> */}
             <BarCodeScanner
               onBarCodeScanned={scannedd ? undefined : handleSuccess}
               // style={StyleSheet.absoluteFillObject}
@@ -240,11 +260,14 @@ export default function CaptureScreen() {
               </Button>
             )}
           </List.Accordion>
+          {/* <TextInput label={"designar espacio"}></TextInput> */}
         </List.Section>
-        {Data.map((items,index)=>{
+        {Data.map((items, index) => {
           return (
-            <TextInput key={index}>{items+index}</TextInput>
-          )
+            <TextInput editable={true} key={index}>
+              {"articulo escaneado " + items}
+            </TextInput>
+          );
         })}
       </View>
 

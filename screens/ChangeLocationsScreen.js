@@ -8,7 +8,7 @@ import {
   ToastAndroid,
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { TextInput, Button } from "react-native-paper";
+import { TextInput, Button, List } from "react-native-paper";
 import { Colors } from "../colors";
 import { Picker } from "@react-native-picker/picker";
 
@@ -34,79 +34,81 @@ import { useNavigation } from "@react-navigation/core";
 LogBox.ignoreLogs(["Setting a timer"]);
 
 export default function ChangeLocationsScreen() {
+  //use for navigate in app
   const navigation = useNavigation();
 
+  //hook for get data (locations registered) before load UI
   const [registeredLocation, setRegisteredLocation] = useState([]);
   useEffect(() => {
     const collectionRef = collection(db, "ubicaciones");
-    const q = query(collectionRef, orderBy("createdDoc"));
+    const q = query(collectionRef, orderBy("FechaCreacion"));
     const getRegisteredLocation = [];
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       console.log("querySnapshot unsusbscribe");
-
       querySnapshot.docs.map((doc) => {
-        const { levels, locations, spacePerLevel, createdDoc } = doc.data();
+        const {
+          Sucursal,
+          ClaseTipo,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
+          FechaCreacion,
+        } = doc.data();
         getRegisteredLocation.push({
-          id: doc.id,
-          levels,
-          locations,
-          spacePerLevel,
-          createdDoc,
+          ID: doc.id,
+          Sucursal,
+          ClaseTipo,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
+          FechaCreacion,
         });
+        // id: doc.id,
+        // storeName: doc.storeName,
+        // products: doc.products,
+        // createdDoc: doc.createdDoc,
       });
       setRegisteredLocation(getRegisteredLocation);
     });
     return unsubscribe;
   }, []);
 
-  const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState();
-  const initialState = {
-    location: "",
-    currentLocation: "",
-    newLocation: "",
-    product: "",
-  };
-  const [dataScanned, setDataScanned] = useState(initialState);
-  ///Update Colony
-  const [selectedColony, setSelectedColony] = useState();
+  ///use for expanded accordion
+  const [expanded, setExpanded] = useState(true);
+  const handlePress = () => setExpanded(!expanded);
+
+  //data saved in state
+  const [dataScanned, setDataScanned] = useState([]);
+  //update picker data
+  const [selectedColony, setSelectedColony] = useState([]);
   const updatePickerColony = (colonySel, indexColony, name, value) => {
-    handleChangeText("newLocation", colonySel);
+    handleChangeText("locations", colonySel);
     setSelectedColony(colonySel);
+    setDataScanned(selectedColony);
   };
 
-  /// use for permission to access camera and await access if granted continue
-  useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
+  //data saved in state
+  const [dataScanned1, setDataScanned1] = useState([]);
+  //update picker data
+  const [selectedColony1, setSelectedColony1] = useState([]);
+  const updatePickerColony1 = (colonySel1, indexColony1, name, value) => {
+    handleChangeText("newlocation", colonySel1);
+    setSelectedColony1(colonySel1);
+    setDataScanned1(selectedColony1);
+  };
 
-    getBarCodeScannerPermissions();
-  }, []);
   ///change value
   const handleChangeText = (data, value) => {
-    setDataScanned({ ...dataScanned, [data]: value });
-
+    setDataScanned([{ [data]: value }]);
     //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
   };
+  /// barcode
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scannedd, setScannedd] = useState(false);
+  const [Data, setData] = useState([]);
 
-  /// save data Scanned in state
-  // const handleSuccess = ({ type, data }) => {
-  //   // setScanned(true);
-  //   //  console.log(`  data: ${data}`);
-  //   // dataScanned.push({ data });
-  //   // Data.push("Producto Escaneado :" + " " + data);
-  //   // registeredLocation.find((location) => {
-  //   //   return console.log(location + "Exist");
-  //   // });
-  //   setDataScanned(data);
-  //   // validateLocationExist();
-
-  //   //console.log(dataScanned);
-  // };
-  //saveNewUser
   const saveNewProductScan = () => {
     if (
       //   store.locations === "" ||
@@ -125,7 +127,7 @@ export default function ChangeLocationsScreen() {
           onPress: () => (
             sendData(),
             ToastAndroid.show(
-              "Ubicacion registrada con exito!",
+              "Articulos  registrados con exito!",
               ToastAndroid.SHORT
             )
           ),
@@ -134,116 +136,152 @@ export default function ChangeLocationsScreen() {
       ]);
     }
   }; //end saveNewUser
-
   ///sendData to firebase
   const sendData = async () => {
-    // console.log(dataScanned);
-    await addDoc(collection(db, "Cambios"), {
-      storeName: auth.currentUser?.email,
-      currentLocation: dataScanned.currentLocation,
-      // newLocation: location.locations,
-       newLocation: dataScanned.newLocation,
-      products: dataScanned.product,
-      createdDoc: new Date(),
+    console.log(dataScanned);
+    await addDoc(collection(db, "cambios"), {
+      Sucursal: auth.currentUser?.email,
+      info: dataScanned,
+      Articulos: Data,
+      FechaActualizacion: new Date(),
     });
-    // await addDoc(collection(db, "historial de cambios"), {
-    //   storeName: auth.currentUser?.email,
-    //   currentLocation: currentLocation,
-    //   newLocation: selectedColony,
-    //   products: Data,
-    //   createdDoc: new Date(),
-    // });
-    // setState(initialState);
-
     ///use this change screen after save data
-    navigation.navigate("Home");
-
-    ///serverTimestamp is used for save date to create document with firebase
+    navigation.navigate("Inicio");
   };
-  /// sendData
-
   return (
-    <ScrollView>
-      {/* <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleSuccess}
-        // style={StyleSheet.absoluteFillObject}
-        height={400}
-        width={400}
-      /> */}
-      <View style={styles.textInput}>
-        <View style={{ marginBottom: 15 }}>
-          <TextInput
-            // disabled={true}
-            mode={"outlined"}
-            label={"Ubicacion Actual:"}
-            // label={"Ubicacion Actual"}
-            values={dataScanned.currentLocation}
-            multiline={true}
-            onChangeText={(value) => {
-              handleChangeText("currentLocation", value);
-            }}
-          />
-          <TextInput
-            // disabled={true}
-            mode={"outlined"}
-           // placeholder={"producto:" + " " + dataScanned}
-            label={"producto:"}
-            values={dataScanned.product}
-            multiline={true}
-            onChangeText={(value) => {
-              handleChangeText("product", value);
-            }}
-          />
-          {/* {  dataScanned
-           ? ("Ubicacion Actual:"+dataScanned)
-            : "Ubicacion no seleccionada"}</TextInput> */}
-        </View>
-        <View style={{ marginBottom: 30, marginTop: 30 }}>
-          <Picker
-            selectedValue={selectedColony}
-            onValueChange={(colonySel, indexColony, name, value) =>
-              updatePickerColony(colonySel, indexColony, name, value)
-            }
-            //value={store.locations}
-          >
-            <Picker.Item
-              label="Selecciona la ubicacion destino"
-              value=""
-              enabled={false}
-            />
-            {registeredLocation.map((location) => {
-              return (
-                <Picker.Item
-                  label={location.locations}
-                  value={location.locations}
-                  key={location.id}
-                />
-              );
-            })}
-          </Picker>
-        </View>
-        <View>
-          <Button
-            mode="contained"
-            buttonColor={Colors.success}
-            onPress={() => {
-              saveNewProductScan();
-            }}
-          >
-            Guardar Nueva Ubicacion
-          </Button>
-        </View>
+    <ScrollView style={styles.container}>
+      {/* current location */}
+      <View>
+        <List.Section title="Datos de la ubicacion seleccionada">
+          <List.Accordion title=" Datos">
+            <Picker
+              selectedValue={selectedColony}
+              onValueChange={(colonySel, indexColony, name, value) =>
+                updatePickerColony(colonySel, indexColony, name, value)
+              }
+            >
+              <Picker.Item
+                label="Selecciona la de ubicacion"
+                value=""
+                enabled={false}
+              />
+              {registeredLocation.map((location) => {
+                return (
+                  <Picker.Item
+                    label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
+                    value={{
+                      ID: location.ID,
+                      Sucursal: location.Sucursal,
+                      ClaseTipo: location.ClaseTipo,
+                      EspacioTotal: location.EspacioTotal,
+                      EspaciosDisponibles: location.EspaciosDisponibles,
+                      TipoDeEspacios: location.TipoDeEspacios,
+                      Etiqueta: location.Etiqueta,
+                      FechaCreacion: location.FechaCreacion,
+                    }}
+                    key={location.ID}
+                  />
+                );
+              })}
+            </Picker>
+            <TextInput disabled={true}>{"ID: " + selectedColony.ID}</TextInput>
+            <TextInput disabled={true}>
+              {"ClaseTipo: " +
+                selectedColony.ClaseTipo +
+                " (" +
+                selectedColony.Etiqueta +
+                " )"}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Tipo de Espacio : " + selectedColony.TipoDeEspacios}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Espacio Total: " + selectedColony.EspacioTotal}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
+            </TextInput>
+          </List.Accordion>
+        </List.Section>
+      </View>
+      {/* new location */}
+      <View>
+        <List.Section title="Datos de la nueva ubicacion ">
+          <List.Accordion title=" Datos">
+            <Picker
+              selectedValue={selectedColony1}
+              onValueChange={(colonySel1, indexColony, name, value) =>
+                updatePickerColony1(colonySel1, indexColony, name, value)
+              }
+            >
+              <Picker.Item
+                label="Selecciona la nueva ubicacion"
+                value=""
+                enabled={false}
+              />
+              {registeredLocation.map((newlocation) => {
+                return (
+                  <Picker.Item
+                    label={
+                      newlocation.ClaseTipo + " (" + newlocation.Etiqueta + ")"
+                    }
+                    value={{
+                      ID: newlocation.ID,
+                      Sucursal: newlocation.Sucursal,
+                      ClaseTipo: newlocation.ClaseTipo,
+                      EspacioTotal: newlocation.EspacioTotal,
+                      EspaciosDisponibles: newlocation.EspaciosDisponibles,
+                      TipoDeEspacios: newlocation.TipoDeEspacios,
+                      Etiqueta: newlocation.Etiqueta,
+                      FechaCreacion: newlocation.FechaCreacion,
+                    }}
+                    key={newlocation.ID}
+                  />
+                );
+              })}
+            </Picker>
+            <TextInput disabled={true}>{"ID: " + selectedColony1.ID}</TextInput>
+            <TextInput disabled={true}>
+              {"ClaseTipo: " +
+                selectedColony1.ClaseTipo +
+                " (" +
+                selectedColony1.Etiqueta +
+                " )"}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Tipo de Espacio : " + selectedColony1.TipoDeEspacios}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Espacio Total: " + selectedColony1.EspacioTotal}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Espacios Disponibles: " + selectedColony1.EspaciosDisponibles}
+            </TextInput>
+          </List.Accordion>
+        </List.Section>
+      </View>
+      {/* send button */}
+      <View style={styles.inputGroup}>
+        <Button
+          mode="contained"
+          buttonColor={Colors.success}
+          onPress={() => {
+            saveNewProductScan();
+          }}
+        >
+          Guardar Productos
+        </Button>
       </View>
     </ScrollView>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     flex: 1,
+    padding: 20,
 
-    flexDirection: "column",
-    justifyContent: "center",
+    // flexDirection: "column",
+    // justifyContent: "center",
   },
   containerScanner: {
     backgroundColor: "#fff",
@@ -275,5 +313,16 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 10,
+  },
+  inputGroup: {
+    flex: 1,
+    padding: 1,
+    marginBottom: 10,
+    borderBottomColor: "#cccccc",
+    fontSize: 17,
+    marginBottom: 10,
+    marginEnd: 10,
+    marginBottom: 30,
+    marginTop: 30,
   },
 });

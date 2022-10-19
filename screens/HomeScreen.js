@@ -43,7 +43,7 @@ const HomeScreen = () => {
           mode="contained"
           onPress={() => navigation.navigate("Ubicaciones")}
         >
-          Ubicaciones
+         Agregar Ubicaciones
         </Button>
       </View>
       <View style={styles.inputGroup}>
@@ -59,9 +59,9 @@ const HomeScreen = () => {
         <Button
           styles={styles.button}
           mode="contained"
-          onPress={() => navigation.navigate("Changes")}
+          onPress={() => navigation.navigate("Cambio de ubicacion")}
         >
-          Cambios
+          Cambio de Ubicacion
         </Button>
       </View>
 
