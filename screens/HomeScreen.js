@@ -14,6 +14,10 @@ import { useNavigation } from "@react-navigation/core";
 
 //Auth firebase
 import { auth } from "../firebase";
+import { LogBox } from "react-native";
+LogBox.ignoreLogs([
+  "Warning: Async Storage has been extracted from react-native core",
+]);
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -43,8 +47,9 @@ const HomeScreen = () => {
           mode="contained"
           onPress={() => navigation.navigate("Ubicaciones")}
         >
-         Agregar Ubicaciones
+          Agregar Ubicaciones
         </Button>
+       
       </View>
       <View style={styles.inputGroup}>
         <Button
@@ -123,5 +128,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     marginBottom: 50,
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
   },
 });

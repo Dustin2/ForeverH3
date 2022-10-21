@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   ToastAndroid,
+  ListView,
 } from "react-native";
 
 ///external dependencies
@@ -26,6 +27,7 @@ import {
   serverTimestamp,
   querySnapshot,
   doc,
+  getDoc,
 } from "firebase/firestore";
 import { async } from "@firebase/util";
 import { LogBox } from "react-native";
@@ -86,7 +88,7 @@ export default function CaptureScreen() {
   const [selectedColony, setSelectedColony] = useState([]);
   const DataSelected = [];
   const updatePickerColony = (colonySel, indexColony, name, value) => {
-    handleChangeText("ss", colonySel);
+    // handleChangeText("ss", colonySel);
     setSelectedColony(colonySel);
     // setDataScanned(selectedColony);
   };
@@ -110,10 +112,18 @@ export default function CaptureScreen() {
     getBarCodeScannerPermissions();
   }, []);
 
+  // useEffect(() => {
+  //   getDoc(doc(db, "ubicaciones", "LF7fCzuhXfnW3nrkPH7Q ")).then((res) =>
+  //     console.log({ id: res.id, ...res.data() })
+  //   );
+  // }, []);
+ 
   const handleSuccess = ({ type, data }) => {
     //setData(dataScannedd);
+    // existIn();
 
     setData([...Data, data]);
+
     setScannedd(true);
     // setData([...data,data ])
     // console.log(data)
@@ -171,8 +181,7 @@ export default function CaptureScreen() {
   const sendData = async () => {
     console.log(dataScanned);
     await addDoc(collection(db, "articulos"), {
-      Sucursal: auth.currentUser?.email,
-      Datos: selectedColony,
+      IDUbicacion: selectedColony.ID,
       Articulos: Data,
       FechaCreacion: new Date(),
     });
@@ -180,11 +189,18 @@ export default function CaptureScreen() {
     ///use this change screen after save data
     navigation.navigate("Inicio");
   };
+
+  // exist in
+  const existIn = async () => {
+    const exist = await collection(db, "articulos").doc(selectedColony.ID).exists();
+    console.log(exist);
+    // if (exist) {}
+  }
   return (
     <ScrollView style={styles.container}>
       <View>
-        <List.Section title="Datos de la ubicacion seleccionada">
-          <List.Accordion title=" Datos">
+        <List.Section>
+          <List.Accordion title=" Datos de la ubicacion seleccionada">
             <Picker
               selectedValue={selectedColony}
               onValueChange={(colonySel, indexColony, name, value) =>
@@ -239,9 +255,7 @@ export default function CaptureScreen() {
 
             {/* <TextInput disabled={true}>{selectedColony.createdDoc}</TextInput> */}
           </List.Accordion>
-        </List.Section>
-        <List.Section title="Datos a escanear">
-          <List.Accordion title=" Datos">
+          <List.Accordion title=" Datos a escanear">
             <BarCodeScanner
               onBarCodeScanned={scannedd ? undefined : handleSuccess}
               // style={StyleSheet.absoluteFillObject}
@@ -259,16 +273,19 @@ export default function CaptureScreen() {
                 Escanear de nuevo
               </Button>
             )}
+            <TextInput label={"espacios que ocupa"}></TextInput>
+
+            {Data.map((items, index) => {
+              return (
+                <List.Item title={"Articulo escaneado :" + items} key={index}>
+                  {/* <TextInput editable={true} key={index}>
+                    {"articulo escaneado " + items}
+                  </TextInput> */}
+                </List.Item>
+              );
+            })}
           </List.Accordion>
-          {/* <TextInput label={"designar espacio"}></TextInput> */}
         </List.Section>
-        {Data.map((items, index) => {
-          return (
-            <TextInput editable={true} key={index}>
-              {"articulo escaneado " + items}
-            </TextInput>
-          );
-        })}
       </View>
 
       <View style={styles.inputGroup}>

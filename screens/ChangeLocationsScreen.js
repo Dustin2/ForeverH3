@@ -23,6 +23,8 @@ import {
   serverTimestamp,
   querySnapshot,
   doc,
+  where,
+  getDoc,
 } from "firebase/firestore";
 
 import { async } from "@firebase/util";
@@ -38,39 +40,42 @@ export default function ChangeLocationsScreen() {
   const navigation = useNavigation();
 
   //hook for get data (locations registered) before load UI
-  const [registeredLocation, setRegisteredLocation] = useState([]);
+  const [products, setProducts] = useState([]);
   useEffect(() => {
-    const collectionRef = collection(db, "ubicaciones");
+    const collectionRef = collection(db, "articulos");
     const q = query(collectionRef, orderBy("FechaCreacion"));
-    const getRegisteredLocation = [];
+    const getProducts = [];
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       console.log("querySnapshot unsusbscribe");
       querySnapshot.docs.map((doc) => {
         const {
-          Sucursal,
-          ClaseTipo,
-          EspacioTotal,
-          EspaciosDisponibles,
-          TipoDeEspacios,
-          Etiqueta,
+          // Sucursal,
+          // ClaseTipo,
+          // EspacioTotal,
+          // EspaciosDisponibles,
+          // TipoDeEspacios,
+          // Etiqueta,
           FechaCreacion,
+          Articulos,
+          // Datos,
+          IDUbicacion,
         } = doc.data();
-        getRegisteredLocation.push({
-          ID: doc.id,
-          Sucursal,
-          ClaseTipo,
-          EspacioTotal,
-          EspaciosDisponibles,
-          TipoDeEspacios,
-          Etiqueta,
+        getProducts.push({
+          IDArticulo: doc.id,
+          // Sucursal,
+          // ClaseTipo,
+          // EspacioTotal,
+          // EspaciosDisponibles,
+          // TipoDeEspacios,
+          // Etiqueta,
           FechaCreacion,
+          Articulos,
+          // Datos,
+          IDUbicacion,
         });
-        // id: doc.id,
-        // storeName: doc.storeName,
-        // products: doc.products,
-        // createdDoc: doc.createdDoc,
       });
-      setRegisteredLocation(getRegisteredLocation);
+      setProducts(getProducts);
+      console.log(products);
     });
     return unsubscribe;
   }, []);
@@ -84,7 +89,7 @@ export default function ChangeLocationsScreen() {
   //update picker data
   const [selectedColony, setSelectedColony] = useState([]);
   const updatePickerColony = (colonySel, indexColony, name, value) => {
-    handleChangeText("locations", colonySel);
+    // handleChangeText("locations", colonySel);
     setSelectedColony(colonySel);
     setDataScanned(selectedColony);
   };
@@ -140,20 +145,34 @@ export default function ChangeLocationsScreen() {
   const sendData = async () => {
     console.log(dataScanned);
     await addDoc(collection(db, "cambios"), {
-      Sucursal: auth.currentUser?.email,
-      info: dataScanned,
+      //Sucursal: auth.currentUser?.email,
+      // Etiqueta: selectedColony.Etiqueta,
+      // ClaseTipo: selectedColony.ClaseTipo,
+      // EspacioTotal: selectedColony.EspacioTotal,
+      // EspaciosDisponibles: selectedColony.EspacioTotal,
+      // TipoDeEspacios: selectedColony.TipoDeEspacios,
+      IDUbicacion: selectedColony.IDUbicacion,
       Articulos: Data,
-      FechaActualizacion: new Date(),
+      IDArticulos: selectedColony.ID,
+      //  FechaCreacion: new Date(),
+      // Articulos: Data,
+      FechaCambio: new Date(),
     });
     ///use this change screen after save data
     navigation.navigate("Inicio");
   };
+  
+  // useEffect(() => {
+  //   getDoc(doc(db, "ubicaciones", "LF7fCzuhXfnW3nrkPH7Q "))
+  //   .then(res=>console.log({id:res.id, ...res.data()}));
+  // }, []);
+
   return (
     <ScrollView style={styles.container}>
       {/* current location */}
       <View>
-        <List.Section title="Datos de la ubicacion seleccionada">
-          <List.Accordion title=" Datos">
+        <List.Section title="Articulos">
+          <List.Accordion title=" Articulos">
             <Picker
               selectedValue={selectedColony}
               onValueChange={(colonySel, indexColony, name, value) =>
@@ -165,12 +184,13 @@ export default function ChangeLocationsScreen() {
                 value=""
                 enabled={false}
               />
-              {registeredLocation.map((location) => {
+              {products.map((location, index) => {
                 return (
                   <Picker.Item
-                    label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
+                    // label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
+                    label={location.Articulos + ""}
                     value={{
-                      ID: location.ID,
+                      ID: location.IDArticulo,
                       Sucursal: location.Sucursal,
                       ClaseTipo: location.ClaseTipo,
                       EspacioTotal: location.EspacioTotal,
@@ -178,6 +198,8 @@ export default function ChangeLocationsScreen() {
                       TipoDeEspacios: location.TipoDeEspacios,
                       Etiqueta: location.Etiqueta,
                       FechaCreacion: location.FechaCreacion,
+                      Articulo: location.Articulos,
+                      IDUbicacion: location.IDUbicacion,
                     }}
                     key={location.ID}
                   />
@@ -185,6 +207,12 @@ export default function ChangeLocationsScreen() {
               })}
             </Picker>
             <TextInput disabled={true}>{"ID: " + selectedColony.ID}</TextInput>
+            <TextInput disabled={true}>
+              {"IDUbicacion: " + selectedColony.IDUbicacion}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Producto: " + selectedColony.Articulo}
+            </TextInput>
             <TextInput disabled={true}>
               {"ClaseTipo: " +
                 selectedColony.ClaseTipo +
@@ -202,45 +230,43 @@ export default function ChangeLocationsScreen() {
               {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
             </TextInput>
           </List.Accordion>
-        </List.Section>
-      </View>
-      {/* new location */}
-      <View>
-        <List.Section title="Datos de la nueva ubicacion ">
-          <List.Accordion title=" Datos">
+          <List.Accordion title=" Articulos">
             <Picker
               selectedValue={selectedColony1}
-              onValueChange={(colonySel1, indexColony, name, value) =>
-                updatePickerColony1(colonySel1, indexColony, name, value)
+              onValueChange={(colonySel1, indexColony1, name, value) =>
+                updatePickerColony1(colonySel1, indexColony1, name, value)
               }
             >
               <Picker.Item
-                label="Selecciona la nueva ubicacion"
+                label="Selecciona la de ubicacion"
                 value=""
                 enabled={false}
               />
-              {registeredLocation.map((newlocation) => {
+              {products.map((location, index) => {
                 return (
                   <Picker.Item
-                    label={
-                      newlocation.ClaseTipo + " (" + newlocation.Etiqueta + ")"
-                    }
+                    // label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
+                    label={location.Articulos + ""}
                     value={{
-                      ID: newlocation.ID,
-                      Sucursal: newlocation.Sucursal,
-                      ClaseTipo: newlocation.ClaseTipo,
-                      EspacioTotal: newlocation.EspacioTotal,
-                      EspaciosDisponibles: newlocation.EspaciosDisponibles,
-                      TipoDeEspacios: newlocation.TipoDeEspacios,
-                      Etiqueta: newlocation.Etiqueta,
-                      FechaCreacion: newlocation.FechaCreacion,
+                      ID: location.ID,
+                      Sucursal: location.Sucursal,
+                      ClaseTipo: location.ClaseTipo,
+                      EspacioTotal: location.EspacioTotal,
+                      EspaciosDisponibles: location.EspaciosDisponibles,
+                      TipoDeEspacios: location.TipoDeEspacios,
+                      Etiqueta: location.Etiqueta,
+                      FechaCreacion: location.FechaCreacion,
+                      Articulo: location.Articulos,
                     }}
-                    key={newlocation.ID}
+                    key={location.ID}
                   />
                 );
               })}
             </Picker>
             <TextInput disabled={true}>{"ID: " + selectedColony1.ID}</TextInput>
+            <TextInput disabled={true}>
+              {"Producto: " + selectedColony1.Articulo}
+            </TextInput>
             <TextInput disabled={true}>
               {"ClaseTipo: " +
                 selectedColony1.ClaseTipo +
@@ -260,6 +286,8 @@ export default function ChangeLocationsScreen() {
           </List.Accordion>
         </List.Section>
       </View>
+      {/* new location */}
+
       {/* send button */}
       <View style={styles.inputGroup}>
         <Button
