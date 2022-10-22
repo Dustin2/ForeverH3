@@ -188,7 +188,7 @@ export default function CaptureScreen() {
     console.log(dataScanned);
     await addDoc(collection(db, "articulos"), {
       IDUbicacion: selectedColony.ID,
-      IDArticulo : "",
+
       Sucursal: selectedColony.Sucursal,
       UbicacionActual: selectedColony.ClaseTipo,
       UltimaUbicacion: selectedColony.ClaseTipo,

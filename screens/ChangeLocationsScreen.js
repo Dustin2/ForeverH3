@@ -102,6 +102,7 @@ export default function ChangeLocationsScreen() {
           Etiqueta,
           FechaCreacion,
           UltimaUbicacion,
+          ID
         } = doc.data();
         getRegisteredLocation.push({
           ID: doc.id,
@@ -186,8 +187,8 @@ export default function ChangeLocationsScreen() {
         {
           text: "Guardar",
           onPress: () => (
-            // sendData(),
-            onEdit(),
+             sendData(),
+           // onEdit(),
             ToastAndroid.show(
               "Articulos  registrados con exito!",
               ToastAndroid.SHORT
@@ -200,20 +201,27 @@ export default function ChangeLocationsScreen() {
   }; //end saveNewUser
   ///sendData to firebase
   const sendData = async () => {
-   // console.log(dataScanned);
+    // console.log(dataScanned);
     await addDoc(collection(db, "cambios"), {
       //Sucursal: auth.currentUser?.email,
-      Etiqueta: selectedColony1.Etiqueta,
-      UbicacionActual: selectedColony1.ClaseTipo,
-      UbicacionAnterior: selectedColony.ClaseTipo,
+    //   Etiqueta: selectedColony.Etiqueta,
+   UbicacionActual: selectedColony1.UbicacionActual,
+      UbicacionAnterior: selectedColony.UbicacionActual,
       // EspacioTotal: selectedColony.EspacioTotal,
-      EspaciosDisponibles: selectedColony1.EspacioTotal,
-      TipoDeEspacios: selectedColony1.TipoDeEspacios,
-      IDUbicacion: selectedColony.IDUbicacion,
-      Articulos: Data,
-      IDArticulos: selectedColony.ID,
+      // EspaciosDisponibles: selectedColony1.EspacioTotal,
+      // TipoDeEspacios: selectedColony1.TipoDeEspacios,
+      
+       IDUbicacion: selectedColony.ID,
+     // Articulos: Data,
+    //  IDArticulos: selectedColony.ID,
       FechaCambio: new Date(),
     });
+    // db.collection("articulos").doc(doc.selectedColony.ID).update({
+    //   Etiqueta: selectedColony1.Etiqueta,
+    //   UbicacionActual: selectedColony1.ClaseTipo,
+    //   UbicacionAnterior: selectedColony1.ClaseTipo,
+    //   EspaciosDisponibles: selectedColony1.EspacioTotal,
+    // });
     ///use this change screen after save data
     navigation.navigate("Inicio");
   };
@@ -225,16 +233,6 @@ export default function ChangeLocationsScreen() {
   const onDelete = () => {
     const docRef = doc(db, "products", id);
     deleteDoc(docRef);
-  };
-
-  const onEdit = () => {
-    const docRef = doc(db, "articulos", selectedColony.ID);
-    updateDoc(docRef, {
-      UltimaUbicacion: selectedColony.ClaseTipo,
-      UbicacionActual: selectedColony1.ClaseTipo,
-      EspacioTotal: selectedColony1.EspacioTotal,
-      EspaciosDisponibles: selectedColony1.EspacioDisponibles,
-    });
   };
 
   return (
@@ -384,6 +382,7 @@ export default function ChangeLocationsScreen() {
           Guardar Productos
         </Button>
       </View>
+      {console.log(selectedColony.ID)}
     </ScrollView>
   );
 }
