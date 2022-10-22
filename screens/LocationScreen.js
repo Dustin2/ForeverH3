@@ -79,11 +79,12 @@ const LocationsScreen = () => {
   //state
   const [store, setStore] = useState({
     locations: "",
-    totalSpace: "",
+    totalSpace: 0,
     customLabel: "",
-    spacesAvailable: "",
+    spacesAvailable: 0,
     storeName: auth.currentUser?.email,
-    kindOfSpace: "",
+    kindOfSpace: 0,
+    
   });
   const navigation = useNavigation();
 
@@ -95,25 +96,24 @@ const LocationsScreen = () => {
   //saveNewUser
 
   const saveNewLocation = () => {
-    const q = query(
-      collection(db, "ubicaciones"),
-      where("Etiqueta", "==", true)
-    );
+    // const q = query(
+    //   collection(db, "ubicaciones"),
+    //   where("Etiqueta", "==", true)
+    // );
 
-    if (q === true) {
-      console.log("error ya existe");
-    }
-    // if (
-    //   (store.locations === "" || store.totalSpace === "",
-    //   store.customLabel === "",
-    //   store.locations === "")
-    // ) {
-    //   Alert.alert(
-    //     "Error Campos invalidos",
-    //     "Porfavor completa todos los campos"
-    //   );
+    // if (q === true) {
+    //   console.log("error ya existe");
     // }
-    else {
+    if (
+      (store.locations === "" || store.totalSpace === "",
+      store.customLabel === "",
+      store.locations === "")
+    ) {
+      Alert.alert(
+        "Error Campos invalidos",
+        "Porfavor completa todos los campos"
+      );
+    } else {
       Alert.alert("Confirmar", "Desea guardar los cambios actuales?", [
         {
           text: "Cancelar",
@@ -145,6 +145,7 @@ const LocationsScreen = () => {
       TipoDeEspacios: store.kindOfSpace,
       Etiqueta: store.customLabel,
       FechaCreacion: new Date(),
+      UltimaUbicacion : store.locations,
     });
     // setState(initialState);
 

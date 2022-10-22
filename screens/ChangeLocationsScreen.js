@@ -25,6 +25,7 @@ import {
   doc,
   where,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 import { async } from "@firebase/util";
@@ -49,33 +50,79 @@ export default function ChangeLocationsScreen() {
       console.log("querySnapshot unsusbscribe");
       querySnapshot.docs.map((doc) => {
         const {
-          // Sucursal,
-          // ClaseTipo,
-          // EspacioTotal,
-          // EspaciosDisponibles,
-          // TipoDeEspacios,
-          // Etiqueta,
+          IDArticulo,
+          Sucursal,
+          UbicacionActual,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
           FechaCreacion,
           Articulos,
-          // Datos,
+          Datos,
           IDUbicacion,
+          UltimaUbicacion,
         } = doc.data();
         getProducts.push({
           IDArticulo: doc.id,
-          // Sucursal,
-          // ClaseTipo,
-          // EspacioTotal,
-          // EspaciosDisponibles,
-          // TipoDeEspacios,
-          // Etiqueta,
+          Sucursal,
+          UbicacionActual,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
           FechaCreacion,
           Articulos,
-          // Datos,
+          Datos,
           IDUbicacion,
+          UltimaUbicacion,
         });
       });
       setProducts(getProducts);
-      console.log(products);
+      //  console.log(products);
+    });
+    return unsubscribe;
+  }, []);
+
+  //hook for get data (locations registered) before load UI
+  const [registeredLocation, setRegisteredLocation] = useState([]);
+  useEffect(() => {
+    const collectionRef = collection(db, "ubicaciones");
+    const q = query(collectionRef, orderBy("FechaCreacion"));
+    const getRegisteredLocation = [];
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      console.log("querySnapshot unsusbscribe");
+      querySnapshot.docs.map((doc) => {
+        const {
+          Sucursal,
+          ClaseTipo,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
+          FechaCreacion,
+          UltimaUbicacion,
+        } = doc.data();
+        getRegisteredLocation.push({
+          ID: doc.id,
+          Sucursal,
+          ClaseTipo,
+          EspacioTotal,
+          EspaciosDisponibles,
+          TipoDeEspacios,
+          Etiqueta,
+          FechaCreacion,
+          UltimaUbicacion,
+        });
+        // id: doc.id,
+        // storeName: doc.storeName,
+        // products: doc.products,
+        // createdDoc: doc.createdDoc,
+      });
+      setRegisteredLocation(getRegisteredLocation);
+      {
+        console.log(getRegisteredLocation.ID);
+      }
     });
     return unsubscribe;
   }, []);
@@ -116,11 +163,20 @@ export default function ChangeLocationsScreen() {
 
   const saveNewProductScan = () => {
     if (
-      //   store.locations === "" ||
-      dataScanned === ""
+      selectedColony1.EspaciosDisponibles <= selectedColony.EspaciosDisponibles
     ) {
-      Alert.alert("Error Campos vacios", "No se ha escaneado aun");
-    } else {
+      Alert.alert(
+        "no es posible el cambio de ubicacion",
+        "ubicacion con espacios insuficientes"
+      );
+    }
+    // if (
+    //   //   store.locations === "" ||
+    //   dataScanned === ""
+    // ) {
+    //   Alert.alert("Error Campos vacios", "No se ha escaneado aun");
+    // }
+    else {
       Alert.alert("Confirmar", "Desea guardar los cambios actuales?", [
         {
           text: "Cancelar",
@@ -130,7 +186,8 @@ export default function ChangeLocationsScreen() {
         {
           text: "Guardar",
           onPress: () => (
-            sendData(),
+            // sendData(),
+            onEdit(),
             ToastAndroid.show(
               "Articulos  registrados con exito!",
               ToastAndroid.SHORT
@@ -143,29 +200,42 @@ export default function ChangeLocationsScreen() {
   }; //end saveNewUser
   ///sendData to firebase
   const sendData = async () => {
-    console.log(dataScanned);
+   // console.log(dataScanned);
     await addDoc(collection(db, "cambios"), {
       //Sucursal: auth.currentUser?.email,
-      // Etiqueta: selectedColony.Etiqueta,
-      // ClaseTipo: selectedColony.ClaseTipo,
+      Etiqueta: selectedColony1.Etiqueta,
+      UbicacionActual: selectedColony1.ClaseTipo,
+      UbicacionAnterior: selectedColony.ClaseTipo,
       // EspacioTotal: selectedColony.EspacioTotal,
-      // EspaciosDisponibles: selectedColony.EspacioTotal,
-      // TipoDeEspacios: selectedColony.TipoDeEspacios,
+      EspaciosDisponibles: selectedColony1.EspacioTotal,
+      TipoDeEspacios: selectedColony1.TipoDeEspacios,
       IDUbicacion: selectedColony.IDUbicacion,
       Articulos: Data,
       IDArticulos: selectedColony.ID,
-      //  FechaCreacion: new Date(),
-      // Articulos: Data,
       FechaCambio: new Date(),
     });
     ///use this change screen after save data
     navigation.navigate("Inicio");
   };
-  
+
   // useEffect(() => {
   //   getDoc(doc(db, "ubicaciones", "LF7fCzuhXfnW3nrkPH7Q "))
   //   .then(res=>console.log({id:res.id, ...res.data()}));
   // }, []);
+  const onDelete = () => {
+    const docRef = doc(db, "products", id);
+    deleteDoc(docRef);
+  };
+
+  const onEdit = () => {
+    const docRef = doc(db, "articulos", selectedColony.ID);
+    updateDoc(docRef, {
+      UltimaUbicacion: selectedColony.ClaseTipo,
+      UbicacionActual: selectedColony1.ClaseTipo,
+      EspacioTotal: selectedColony1.EspacioTotal,
+      EspaciosDisponibles: selectedColony1.EspacioDisponibles,
+    });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -188,11 +258,20 @@ export default function ChangeLocationsScreen() {
                 return (
                   <Picker.Item
                     // label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
-                    label={location.Articulos + ""}
+
+                    label={
+                      location.Articulos +
+                      " " +
+                      location.UbicacionActual +
+                      " (" +
+                      location.Etiqueta +
+                      ")"
+                    }
                     value={{
                       ID: location.IDArticulo,
                       Sucursal: location.Sucursal,
-                      ClaseTipo: location.ClaseTipo,
+                      UbicacionActual: location.UbicacionActual,
+                      UltimaUbicacion: location.UltimaUbicacion,
                       EspacioTotal: location.EspacioTotal,
                       EspaciosDisponibles: location.EspaciosDisponibles,
                       TipoDeEspacios: location.TipoDeEspacios,
@@ -201,7 +280,7 @@ export default function ChangeLocationsScreen() {
                       Articulo: location.Articulos,
                       IDUbicacion: location.IDUbicacion,
                     }}
-                    key={location.ID}
+                    key={index}
                   />
                 );
               })}
@@ -214,8 +293,15 @@ export default function ChangeLocationsScreen() {
               {"Producto: " + selectedColony.Articulo}
             </TextInput>
             <TextInput disabled={true}>
-              {"ClaseTipo: " +
-                selectedColony.ClaseTipo +
+              {"Ubicacion Actual: " +
+                selectedColony.UbicacionActual +
+                " (" +
+                selectedColony.Etiqueta +
+                " )"}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"Nueva Ubicacion: " +
+                selectedColony.UltimaUbicacion +
                 " (" +
                 selectedColony.Etiqueta +
                 " )"}
@@ -230,64 +316,62 @@ export default function ChangeLocationsScreen() {
               {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
             </TextInput>
           </List.Accordion>
-          <List.Accordion title=" Articulos">
-            <Picker
-              selectedValue={selectedColony1}
-              onValueChange={(colonySel1, indexColony1, name, value) =>
-                updatePickerColony1(colonySel1, indexColony1, name, value)
-              }
-            >
-              <Picker.Item
-                label="Selecciona la de ubicacion"
-                value=""
-                enabled={false}
-              />
-              {products.map((location, index) => {
-                return (
-                  <Picker.Item
-                    // label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
-                    label={location.Articulos + ""}
-                    value={{
-                      ID: location.ID,
-                      Sucursal: location.Sucursal,
-                      ClaseTipo: location.ClaseTipo,
-                      EspacioTotal: location.EspacioTotal,
-                      EspaciosDisponibles: location.EspaciosDisponibles,
-                      TipoDeEspacios: location.TipoDeEspacios,
-                      Etiqueta: location.Etiqueta,
-                      FechaCreacion: location.FechaCreacion,
-                      Articulo: location.Articulos,
-                    }}
-                    key={location.ID}
-                  />
-                );
-              })}
-            </Picker>
-            <TextInput disabled={true}>{"ID: " + selectedColony1.ID}</TextInput>
-            <TextInput disabled={true}>
-              {"Producto: " + selectedColony1.Articulo}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"ClaseTipo: " +
-                selectedColony1.ClaseTipo +
-                " (" +
-                selectedColony1.Etiqueta +
-                " )"}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Tipo de Espacio : " + selectedColony1.TipoDeEspacios}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Espacio Total: " + selectedColony1.EspacioTotal}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Espacios Disponibles: " + selectedColony1.EspaciosDisponibles}
-            </TextInput>
-          </List.Accordion>
         </List.Section>
       </View>
       {/* new location */}
-
+      <List.Accordion title=" Datos de la ubicacion seleccionada">
+        <Picker
+          selectedValue={selectedColony1}
+          onValueChange={(colonySel1, indexColony, name, value) =>
+            updatePickerColony1(colonySel1, indexColony, name, value)
+          }
+        >
+          <Picker.Item
+            label="Selecciona la nueva ubicacion"
+            value=""
+            enabled={false}
+          />
+          {registeredLocation.map((location, index) => {
+            return (
+              <Picker.Item
+                label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
+                value={{
+                  ID: location.ID,
+                  Sucursal: location.Sucursal,
+                  UbicacionActual: location.ClaseTipo,
+                  EspacioTotal: location.EspacioTotal,
+                  EspaciosDisponibles: location.EspaciosDisponibles,
+                  TipoDeEspacios: location.TipoDeEspacios,
+                  Etiqueta: location.Etiqueta,
+                  FechaCreacion: location.FechaCreacion,
+                  UltimaUbicacion: location.UltimaUbicacion,
+                }}
+                key={index}
+              />
+            );
+          })}
+        </Picker>
+        <TextInput disabled={true}>{"ID: " + selectedColony1.ID}</TextInput>
+        <TextInput disabled={true}>
+          {"Ubicacion Actual: " +
+            selectedColony1.ClaseTipo +
+            " (" +
+            selectedColony1.Etiqueta +
+            " )"}
+        </TextInput>
+        <TextInput disabled={true}>
+          {"UltimaUbicacion: " + selectedColony1.UltimaUbicacion}
+        </TextInput>
+        <TextInput disabled={true}>
+          {"Tipo de Espacio : " + selectedColony1.TipoDeEspacios}
+        </TextInput>
+        <TextInput disabled={true}>
+          {"Espacio Total: " + selectedColony1.EspacioTotal}
+        </TextInput>
+        <TextInput disabled={true}>
+          {"Espacios Disponibles: " + selectedColony1.EspaciosDisponibles}
+        </TextInput>
+      </List.Accordion>
       {/* send button */}
       <View style={styles.inputGroup}>
         <Button

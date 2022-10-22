@@ -57,6 +57,7 @@ export default function CaptureScreen() {
           TipoDeEspacios,
           Etiqueta,
           FechaCreacion,
+          UltimaUbicacion,
         } = doc.data();
         getRegisteredLocation.push({
           ID: doc.id,
@@ -67,6 +68,7 @@ export default function CaptureScreen() {
           TipoDeEspacios,
           Etiqueta,
           FechaCreacion,
+          UltimaUbicacion,
         });
         // id: doc.id,
         // storeName: doc.storeName,
@@ -93,9 +95,13 @@ export default function CaptureScreen() {
     // setDataScanned(selectedColony);
   };
 
+  /// kindOfSpace
+  const [kindofspace, setKindOfSpace] = useState(0);
   ///change value
   const handleChangeText = (data, value) => {
     setDataScanned([{ [data]: value }]);
+    // setKindOfSpace({ [data]: value });
+    // console.log(kindofspace);
     //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
   };
   /// barcode
@@ -117,7 +123,7 @@ export default function CaptureScreen() {
   //     console.log({ id: res.id, ...res.data() })
   //   );
   // }, []);
- 
+
   const handleSuccess = ({ type, data }) => {
     //setData(dataScannedd);
     // existIn();
@@ -182,6 +188,14 @@ export default function CaptureScreen() {
     console.log(dataScanned);
     await addDoc(collection(db, "articulos"), {
       IDUbicacion: selectedColony.ID,
+      IDArticulo : "",
+      Sucursal: selectedColony.Sucursal,
+      UbicacionActual: selectedColony.ClaseTipo,
+      UltimaUbicacion: selectedColony.ClaseTipo,
+      EspacioTotal: selectedColony.EspacioTotal,
+      EspaciosDisponibles: selectedColony.EspaciosDisponibles - kindofspace,
+      TipoDeEspacios: selectedColony.TipoDeEspacios,
+      Etiqueta: selectedColony.Etiqueta,
       Articulos: Data,
       FechaCreacion: new Date(),
     });
@@ -190,12 +204,6 @@ export default function CaptureScreen() {
     navigation.navigate("Inicio");
   };
 
-  // exist in
-  const existIn = async () => {
-    const exist = await collection(db, "articulos").doc(selectedColony.ID).exists();
-    console.log(exist);
-    // if (exist) {}
-  }
   return (
     <ScrollView style={styles.container}>
       <View>
@@ -212,7 +220,7 @@ export default function CaptureScreen() {
                 value=""
                 enabled={false}
               />
-              {registeredLocation.map((location) => {
+              {registeredLocation.map((location, index) => {
                 return (
                   <Picker.Item
                     label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
@@ -225,19 +233,23 @@ export default function CaptureScreen() {
                       TipoDeEspacios: location.TipoDeEspacios,
                       Etiqueta: location.Etiqueta,
                       FechaCreacion: location.FechaCreacion,
+                      UltimaUbicacion: location.UltimaUbicacion,
                     }}
-                    key={location.ID}
+                    key={index}
                   />
                 );
               })}
             </Picker>
             <TextInput disabled={true}>{"ID: " + selectedColony.ID}</TextInput>
             <TextInput disabled={true}>
-              {"ClaseTipo: " +
+              {"Ubicacion Actual: " +
                 selectedColony.ClaseTipo +
                 " (" +
                 selectedColony.Etiqueta +
                 " )"}
+            </TextInput>
+            <TextInput disabled={true}>
+              {"UltimaUbicacion: " + selectedColony.UltimaUbicacion}
             </TextInput>
             <TextInput disabled={true}>
               {"Tipo de Espacio : " + selectedColony.TipoDeEspacios}
@@ -248,6 +260,7 @@ export default function CaptureScreen() {
             <TextInput disabled={true}>
               {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
             </TextInput>
+
             {/* 
             <TextInput disabled={true}>
               {"Fecha de creacion: " + selectedColony.FechaCreacion}
@@ -273,15 +286,25 @@ export default function CaptureScreen() {
                 Escanear de nuevo
               </Button>
             )}
-            <TextInput label={"espacios que ocupa"}></TextInput>
-
-            {Data.map((items, index) => {
+            {console.log(kindofspace)}
+            {Data.map((items, index, index2) => {
               return (
-                <List.Item title={"Articulo escaneado :" + items} key={index}>
-                  {/* <TextInput editable={true} key={index}>
+                // <List.Item title={"Articulo escaneado :" + items} key={index}>
+                <View>
+                  <TextInput editable={false} key={index}>
                     {"articulo escaneado " + items}
-                  </TextInput> */}
-                </List.Item>
+                  </TextInput>
+                  <TextInput
+                    label={"espacios que ocupa"}
+                    keyboardType="numeric"
+                    key={index2}
+                    onChangeText={(value) => {
+                      setKindOfSpace(value);
+                    }}
+                  ></TextInput>
+                </View>
+
+                // </List.Item>
               );
             })}
           </List.Accordion>
