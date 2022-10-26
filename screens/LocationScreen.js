@@ -79,12 +79,11 @@ const LocationsScreen = () => {
   //state
   const [store, setStore] = useState({
     locations: "",
-    totalSpace: 0,
+    totalSpace: "",
     customLabel: "",
-    spacesAvailable: 0,
+    spacesAvailable: "",
     storeName: auth.currentUser?.email,
-    kindOfSpace: 0,
-    
+    kindOfSpace: "",
   });
   const navigation = useNavigation();
 
@@ -145,26 +144,26 @@ const LocationsScreen = () => {
       TipoDeEspacios: store.kindOfSpace,
       Etiqueta: store.customLabel,
       FechaCreacion: new Date(),
-      UltimaUbicacion : store.locations,
+      UltimaUbicacion: store.locations,
     });
     // setState(initialState);
 
     ///use this change screen after save data
 
     navigation.navigate("Inicio");
-    startLoading();
+   // startLoading();
     ///serverTimestamp is used for save date to create document with firebase
   };
   /// sendData
 
-  const [showActivity, setShowActivity] = useState(false);
+  // const [showActivity, setShowActivity] = useState(false);
 
-  const startLoading = () => {
-    setShowActivity(true);
-    setTimeout(() => {
-      setShowActivity(false);
-    }, 3000);
-  };
+  // const startLoading = () => {
+  //   setShowActivity(true);
+  //   setTimeout(() => {
+  //     setShowActivity(false);
+  //   }, 3000);
+  // };
 
   ///Update picker location
   const [selectedColony, setSelectedColony] = useState();
@@ -253,12 +252,12 @@ const LocationsScreen = () => {
           }}
         />
       </View>
-      <ActivityIndicator
+      {/* <ActivityIndicator
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         animating={showActivity}
         color={MD2Colors.green600}
         size={"large"}
-      />
+      /> */}
 
       <View style={styles.inputGroup}>
         <Button
@@ -268,7 +267,8 @@ const LocationsScreen = () => {
           style={styles.button}
           onPress={() => {
             saveNewLocation();
-            startLoading();
+            // startLoading();
+            
           }}
         >
           Guardar

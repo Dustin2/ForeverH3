@@ -40,50 +40,30 @@ export default function ChangeLocationsScreen() {
   //use for navigate in app
   const navigation = useNavigation();
 
-  //hook for get data (locations registered) before load UI
+  //hook for get data (products registered) before load UI
   const [products, setProducts] = useState([]);
   useEffect(() => {
     const collectionRef = collection(db, "articulos");
-    const q = query(collectionRef, orderBy("FechaCreacion"));
-    const getProducts = [];
+    const q = query(collectionRef, orderBy("products", "desc"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       console.log("querySnapshot unsusbscribe");
-      querySnapshot.docs.map((doc) => {
-        const {
-          IDArticulo,
-          Sucursal,
-          UbicacionActual,
-          EspacioTotal,
-          EspaciosDisponibles,
-          TipoDeEspacios,
-          Etiqueta,
-          FechaCreacion,
-          Articulos,
-          Datos,
-          IDUbicacion,
-          UltimaUbicacion,
-        } = doc.data();
-        getProducts.push({
-          IDArticulo: doc.id,
-          Sucursal,
-          UbicacionActual,
-          EspacioTotal,
-          EspaciosDisponibles,
-          TipoDeEspacios,
-          Etiqueta,
-          FechaCreacion,
-          Articulos,
-          Datos,
-          IDUbicacion,
-          UltimaUbicacion,
-        });
-      });
-      setProducts(getProducts);
-      //  console.log(products);
+      const datos = [];
+      setProducts(
+        querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          // EspacioOcupado: doc.data().EspacioOcupado,
+          // FechaCreacion: doc.data().FechaCreacion,
+          // Producto: doc.data().Producto,
+          // TipoDeEspacios: doc.data().TipoDeEspacios,
+          // UbicacionActual: doc.data().UbicacionActual,
+          // UltimaUbicacion: doc.data().UltimaUbicacion,
+          // Sucursal: doc.data().Sucursal,
+        }))
+      );
     });
     return unsubscribe;
   }, []);
-
   //hook for get data (locations registered) before load UI
   const [registeredLocation, setRegisteredLocation] = useState([]);
   useEffect(() => {
@@ -102,7 +82,7 @@ export default function ChangeLocationsScreen() {
           Etiqueta,
           FechaCreacion,
           UltimaUbicacion,
-          ID
+          ID,
         } = doc.data();
         getRegisteredLocation.push({
           ID: doc.id,
@@ -122,7 +102,7 @@ export default function ChangeLocationsScreen() {
       });
       setRegisteredLocation(getRegisteredLocation);
       {
-        console.log(getRegisteredLocation.ID);
+        //   console.log(getRegisteredLocation.ID);
       }
     });
     return unsubscribe;
@@ -132,52 +112,40 @@ export default function ChangeLocationsScreen() {
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
 
-  //data saved in state
-  const [dataScanned, setDataScanned] = useState([]);
+  // //data saved in state
+  // const [dataScanned, setDataScanned] = useState([]);
   //update picker data
   const [selectedColony, setSelectedColony] = useState([]);
   const updatePickerColony = (colonySel, indexColony, name, value) => {
     // handleChangeText("locations", colonySel);
     setSelectedColony(colonySel);
-    setDataScanned(selectedColony);
   };
 
-  //data saved in state
-  const [dataScanned1, setDataScanned1] = useState([]);
+  // //data saved in state
+  // const [dataScanned1, setDataScanned1] = useState([]);
   //update picker data
   const [selectedColony1, setSelectedColony1] = useState([]);
   const updatePickerColony1 = (colonySel1, indexColony1, name, value) => {
-    handleChangeText("newlocation", colonySel1);
+    // handleChangeText("ss", colonySel);
     setSelectedColony1(colonySel1);
-    setDataScanned1(selectedColony1);
+    // setDataScanned(selectedColony);
   };
-
-  ///change value
-  const handleChangeText = (data, value) => {
-    setDataScanned([{ [data]: value }]);
-    //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
-  };
-  /// barcode
-  const [hasPermission, setHasPermission] = useState(null);
-  const [scannedd, setScannedd] = useState(false);
-  const [Data, setData] = useState([]);
 
   const saveNewProductScan = () => {
-    if (
-      selectedColony1.EspaciosDisponibles <= selectedColony.EspaciosDisponibles
-    ) {
-      Alert.alert(
-        "no es posible el cambio de ubicacion",
-        "ubicacion con espacios insuficientes"
-      );
-    }
     // if (
-    //   //   store.locations === "" ||
-    //   dataScanned === ""
+    //   selectedColony1.EspaciosDisponibles <= selectedColony.EspaciosDisponibles
     // ) {
-    //   Alert.alert("Error Campos vacios", "No se ha escaneado aun");
+    //   Alert.alert(
+    //     "no es posible el cambio de ubicacion",
+    //     "ubicacion con espacios insuficientes"
+    //   );
     // }
-    else {
+    if (
+      //   store.locations === "" ||
+      products === ""
+    ) {
+      Alert.alert("Error Campos vacios", "No se ha escaneado aun");
+    } else {
       Alert.alert("Confirmar", "Desea guardar los cambios actuales?", [
         {
           text: "Cancelar",
@@ -187,8 +155,8 @@ export default function ChangeLocationsScreen() {
         {
           text: "Guardar",
           onPress: () => (
-             sendData(),
-           // onEdit(),
+            sendData(),
+            // onEdit(),
             ToastAndroid.show(
               "Articulos  registrados con exito!",
               ToastAndroid.SHORT
@@ -198,23 +166,23 @@ export default function ChangeLocationsScreen() {
         },
       ]);
     }
-  }; //end saveNewUser
+  };
+
   ///sendData to firebase
   const sendData = async () => {
     // console.log(dataScanned);
     await addDoc(collection(db, "cambios"), {
       //Sucursal: auth.currentUser?.email,
-    //   Etiqueta: selectedColony.Etiqueta,
-   UbicacionActual: selectedColony1.UbicacionActual,
-      UbicacionAnterior: selectedColony.UbicacionActual,
+      //   Etiqueta: selectedColony.Etiqueta,
+      //  UbicacionActual: selectedColony1.UbicacionActual,
+      //     UbicacionAnterior: selectedColony.UbicacionActual,
       // EspacioTotal: selectedColony.EspacioTotal,
       // EspaciosDisponibles: selectedColony1.EspacioTotal,
       // TipoDeEspacios: selectedColony1.TipoDeEspacios,
-      
-       IDUbicacion: selectedColony.ID,
-     // Articulos: Data,
-    //  IDArticulos: selectedColony.ID,
-      FechaCambio: new Date(),
+      //  IDUbicacion: selectedColony.ID,
+      // Articulos: Data,
+      //  IDArticulos: selectedColony.ID,
+      // FechaCambio: new Date(),
     });
     // db.collection("articulos").doc(doc.selectedColony.ID).update({
     //   Etiqueta: selectedColony1.Etiqueta,
@@ -225,65 +193,44 @@ export default function ChangeLocationsScreen() {
     ///use this change screen after save data
     navigation.navigate("Inicio");
   };
-
-  // useEffect(() => {
-  //   getDoc(doc(db, "ubicaciones", "LF7fCzuhXfnW3nrkPH7Q "))
-  //   .then(res=>console.log({id:res.id, ...res.data()}));
-  // }, []);
-  const onDelete = () => {
-    const docRef = doc(db, "products", id);
-    deleteDoc(docRef);
-  };
-
+  // const [dataSelected,setDataSelected] = useState([]);
+  //   ///change value
+  //   const handleChangeText = (data, value) => {
+  //     setDataSelected([{ [data]: value }]);
+  //     //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
+  //   };
   return (
     <ScrollView style={styles.container}>
       {/* current location */}
       <View>
-        <List.Section title="Articulos">
+        <List.Section title="Articulos escaneados">
           <List.Accordion title=" Articulos">
-            <Picker
+            {/* <Picker
               selectedValue={selectedColony}
               onValueChange={(colonySel, indexColony, name, value) =>
                 updatePickerColony(colonySel, indexColony, name, value)
               }
             >
               <Picker.Item
-                label="Selecciona la de ubicacion"
+                label="Selecciona el articulo a cambiar"
                 value=""
                 enabled={false}
               />
               {products.map((location, index) => {
                 return (
                   <Picker.Item
-                    // label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
-
-                    label={
-                      location.Articulos +
-                      " " +
-                      location.UbicacionActual +
-                      " (" +
-                      location.Etiqueta +
-                      ")"
+                    label={"Producto"}
+                    value={
+                      {
+                        // ID: location.products.id,
+                      }
                     }
-                    value={{
-                      ID: location.IDArticulo,
-                      Sucursal: location.Sucursal,
-                      UbicacionActual: location.UbicacionActual,
-                      UltimaUbicacion: location.UltimaUbicacion,
-                      EspacioTotal: location.EspacioTotal,
-                      EspaciosDisponibles: location.EspaciosDisponibles,
-                      TipoDeEspacios: location.TipoDeEspacios,
-                      Etiqueta: location.Etiqueta,
-                      FechaCreacion: location.FechaCreacion,
-                      Articulo: location.Articulos,
-                      IDUbicacion: location.IDUbicacion,
-                    }}
                     key={index}
                   />
                 );
               })}
-            </Picker>
-            <TextInput disabled={true}>{"ID: " + selectedColony.ID}</TextInput>
+            </Picker> */}
+            {/* <TextInput disabled={true}>{"ID: " + selectedColony.ID}</TextInput>
             <TextInput disabled={true}>
               {"IDUbicacion: " + selectedColony.IDUbicacion}
             </TextInput>
@@ -312,12 +259,26 @@ export default function ChangeLocationsScreen() {
             </TextInput>
             <TextInput disabled={true}>
               {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
-            </TextInput>
+            </TextInput> */}
+            {products.map((product, index) => {
+              console.log(product);
+              return (
+                <View key={index}>
+                  <TextInput>{product.id}</TextInput>
+                 {product.products.map((newProduct,index)=>{
+                  return (
+                    <TextInput
+                      key={index}></TextInput>
+                  )
+                 })}
+                </View>
+              );
+            })}
           </List.Accordion>
         </List.Section>
       </View>
       {/* new location */}
-      <List.Accordion title=" Datos de la ubicacion seleccionada">
+      {/* <List.Accordion title=" Datos de la ubicacion seleccionada">
         <Picker
           selectedValue={selectedColony1}
           onValueChange={(colonySel1, indexColony, name, value) =>
@@ -369,7 +330,8 @@ export default function ChangeLocationsScreen() {
         <TextInput disabled={true}>
           {"Espacios Disponibles: " + selectedColony1.EspaciosDisponibles}
         </TextInput>
-      </List.Accordion>
+      </List.Accordion> */}
+
       {/* send button */}
       <View style={styles.inputGroup}>
         <Button
@@ -382,7 +344,6 @@ export default function ChangeLocationsScreen() {
           Guardar Productos
         </Button>
       </View>
-      {console.log(selectedColony.ID)}
     </ScrollView>
   );
 }

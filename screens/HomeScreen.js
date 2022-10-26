@@ -14,10 +14,7 @@ import { useNavigation } from "@react-navigation/core";
 
 //Auth firebase
 import { auth } from "../firebase";
-import { LogBox } from "react-native";
-LogBox.ignoreLogs([
-  "Warning: Async Storage has been extracted from react-native core",
-]);
+
 
 const HomeScreen = () => {
   const navigation = useNavigation();

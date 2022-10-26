@@ -83,31 +83,9 @@ export default function CaptureScreen() {
   ///use for expanded accordion
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
-
-  //data saved in state
-  const [dataScanned, setDataScanned] = useState([]);
-  //update picker data
-  const [selectedColony, setSelectedColony] = useState([]);
-  const DataSelected = [];
-  const updatePickerColony = (colonySel, indexColony, name, value) => {
-    // handleChangeText("ss", colonySel);
-    setSelectedColony(colonySel);
-    // setDataScanned(selectedColony);
-  };
-
-  /// kindOfSpace
-  const [kindofspace, setKindOfSpace] = useState(0);
-  ///change value
-  const handleChangeText = (data, value) => {
-    setDataScanned([{ [data]: value }]);
-    // setKindOfSpace({ [data]: value });
-    // console.log(kindofspace);
-    //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
-  };
   /// barcode
   const [hasPermission, setHasPermission] = useState(null);
   const [scannedd, setScannedd] = useState(false);
-  const [Data, setData] = useState([]);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -118,61 +96,85 @@ export default function CaptureScreen() {
     getBarCodeScannerPermissions();
   }, []);
 
-  // useEffect(() => {
-  //   getDoc(doc(db, "ubicaciones", "LF7fCzuhXfnW3nrkPH7Q ")).then((res) =>
-  //     console.log({ id: res.id, ...res.data() })
-  //   );
-  // }, []);
+  // if (hasPermission === null) {
+  //   return <Text>Requesting for camera permission</Text>;
+  // }
+  // if (hasPermission === false) {
+  //   return <Text>No access to camera</Text>;
+  // }
 
-  const handleSuccess = ({ type, data }) => {
-    //setData(dataScannedd);
-    // existIn();
-
-    setData([...Data, data]);
-
-    setScannedd(true);
-    // setData([...data,data ])
-    // console.log(data)
-    // const addProducts = {
-    //   codeProduct: data,
-    // }
-    // setData([...data, addProducts])
-    // console.log(addProducts)
-    // console.log(data);
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-
-    //   if (Data.lengt >= getRegisteredLocation.totalSpace) {
-    //     Alert.alert("no es posible escanear de nuevo");
-    //   } else {
-    //     // Alert.alert("aun puede escanear")
-    //   }
+  //update picker data
+  const [selectedColony, setSelectedColony] = useState([]);
+  const updatePickerColony = (colonySel, indexColony, name, value) => {
+    // handleChangeText("ss", colonySel);
+    setSelectedColony(colonySel);
+    // setDataScanned(selectedColony);
   };
 
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  // ///change value
+  // const handleChangeText = (data, value) => {
+  //   setDataScanned([([data] = value)]);
+  //   console.log(dataScanned);
+  //   //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
+  // };
+
+  ///change value
+  const handleChangeText = (name, value, data) => {
+    // setScannedd(true);
+    // const newProduct = {
+    //   Producto: data,
+    //   EspacioOcupado: usedSpaces,
+    //   UbicacionActual: selectedColony.ClaseTipo,
+    //   UltimaUbicacion: selectedColony.UltimaUbicacion,
+    //   FechaCreacion: new Date(),
+    //   TipoDeEspacios: selectedColony.TipoDeEspacios,
+    // };
+    setUsedSpaces({ ...usedSpaces, [name]: value });
+    // setProducts([...products, newProduct]);
+
+    //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
+  };
+  const handleSuccess = ({ data }) => {
+    setScannedd(true);
+    // console.log("dato escaneado:" + data);
+    const newProduct = {
+      Producto: data,
+      EspacioOcupado: usedSpaces.usedspace,
+      UbicacionActual: selectedColony.ClaseTipo,
+      UltimaUbicacion: selectedColony.UltimaUbicacion,
+      FechaCreacion: new Date(),
+      TipoDeEspacios: selectedColony.TipoDeEspacios,
+    };
+    setProducts([...products, newProduct]);
+    console.log(products);
+  };
+
+  //data saved in state
+  const [products, setProducts] = useState([]);
+  const [spaces, setSpaces] = useState(0);
+  const [usedSpaces, setUsedSpaces] = useState({
+    usedspace: "",
+  });
 
   const saveNewProductScan = () => {
     if (
       //   store.locations === "" ||
-      dataScanned === ""
+      //  dataScanned === ""
+      products === ""
     ) {
       Alert.alert("Error Campos vacios", "No se ha escaneado aun");
     } else {
       Alert.alert("Confirmar", "Desea guardar los cambios actuales?", [
         {
           text: "Cancelar",
-          onPress: () => ToastAndroid.show("cancel!", ToastAndroid.SHORT),
+          onPress: () => ToastAndroid.show("cancelado!", ToastAndroid.SHORT),
           style: "cancel",
         },
         {
           text: "Guardar",
           onPress: () => (
             sendData(),
-            console.log(dataScanned),
+            // console.log(dataScanned),
             ToastAndroid.show(
               "Articulos  registrados con exito!",
               ToastAndroid.SHORT
@@ -183,21 +185,20 @@ export default function CaptureScreen() {
       ]);
     }
   }; //end saveNewUser
-  ///sendData to firebase
+  //sendData to firebase
   const sendData = async () => {
-    console.log(dataScanned);
     await addDoc(collection(db, "articulos"), {
-      IDUbicacion: selectedColony.ID,
-
-      Sucursal: selectedColony.Sucursal,
-      UbicacionActual: selectedColony.ClaseTipo,
-      UltimaUbicacion: selectedColony.ClaseTipo,
-      EspacioTotal: selectedColony.EspacioTotal,
-      EspaciosDisponibles: selectedColony.EspaciosDisponibles - kindofspace,
-      TipoDeEspacios: selectedColony.TipoDeEspacios,
-      Etiqueta: selectedColony.Etiqueta,
-      Articulos: Data,
-      FechaCreacion: new Date(),
+      // IDUbicacion: selectedColony.ID,
+      // Sucursal: selectedColony.Sucursal,
+      products,
+      // Articulos: Data,
+      // UbicacionActual: selectedColony.ClaseTipo,
+      // UltimaUbicacion: selectedColony.ClaseTipo,
+      // EspacioTotal: selectedColony.EspacioTotal,
+      // EspaciosDisponibles: selectedColony.EspaciosDisponibles - kindofspace,
+      // TipoDeEspacios: selectedColony.TipoDeEspacios,
+      // Etiqueta: selectedColony.Etiqueta,
+      // FechaCreacion: new Date(),
     });
 
     ///use this change screen after save data
@@ -260,13 +261,6 @@ export default function CaptureScreen() {
             <TextInput disabled={true}>
               {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
             </TextInput>
-
-            {/* 
-            <TextInput disabled={true}>
-              {"Fecha de creacion: " + selectedColony.FechaCreacion}
-            </TextInput> */}
-
-            {/* <TextInput disabled={true}>{selectedColony.createdDoc}</TextInput> */}
           </List.Accordion>
           <List.Accordion title=" Datos a escanear">
             <BarCodeScanner
@@ -276,38 +270,31 @@ export default function CaptureScreen() {
               width={370}
             />
             {scannedd && (
-              <Button
-                mode="contained"
-                buttonColor={Colors.success}
-                onPress={() => {
-                  setScannedd(false);
-                }}
-              >
-                Escanear de nuevo
-              </Button>
-            )}
-            {console.log(kindofspace)}
-            {Data.map((items, index, index2) => {
-              return (
-                // <List.Item title={"Articulo escaneado :" + items} key={index}>
-                <View>
-                  <TextInput editable={false} key={index}>
-                    {"articulo escaneado " + items}
-                  </TextInput>
-                  <TextInput
-                    label={"espacios que ocupa"}
-                    keyboardType="numeric"
-                    key={index2}
-                    onChangeText={(value) => {
-                      setKindOfSpace(value);
-                    }}
-                  ></TextInput>
-                </View>
+              <View>
+                <Button
+                  mode="contained"
+                  buttonColor={Colors.success}
+                  onPress={() => {
+                    setScannedd(false);
+                  }}
+                >
+                  Escanear de nuevo
+                </Button>
 
-                // </List.Item>
-              );
-            })}
+                <TextInput
+                  label={"valor que ocupa"}
+                  keyboardType="numeric"
+                  onChangeText={(number) => {
+                    handleChangeText("usedspace" + number);
+                  }}
+                  value={usedSpaces.usedspace}
+                ></TextInput>
+              </View>
+            )}
           </List.Accordion>
+          {products.map((products, index) => {
+            return <List.Item key={index}>{products.Producto}</List.Item>;
+          })}
         </List.Section>
       </View>
 
