@@ -8,13 +8,14 @@ import {
   ScrollView,
 } from "react-native";
 import { TextInput, Button } from "react-native-paper";
+import { MaterialIcons } from "@expo/vector-icons";
 
 ///Navigation
 import { useNavigation } from "@react-navigation/core";
 
 //Auth firebase
 import { auth } from "../firebase";
-
+import { Colors } from "../colors";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -43,16 +44,17 @@ const HomeScreen = () => {
           styles={{ marginBottom: 10 }}
           mode="contained"
           onPress={() => navigation.navigate("Ubicaciones")}
+          icon="map-marker-plus"
         >
-          Agregar Ubicaciones
+          Agregar Ubicacion
         </Button>
-       
       </View>
       <View style={styles.inputGroup}>
         <Button
           styles={{ marginBottom: 10 }}
           mode="contained"
           onPress={() => navigation.navigate("Escaneo de productos")}
+          icon="barcode-scan"
         >
           Escaneo de Productos
         </Button>
@@ -62,6 +64,7 @@ const HomeScreen = () => {
           styles={styles.button}
           mode="contained"
           onPress={() => navigation.navigate("Cambio de ubicacion")}
+          icon="map-marker-right"
         >
           Cambio de Ubicacion
         </Button>
@@ -72,6 +75,7 @@ const HomeScreen = () => {
           styles={styles.button}
           mode="contained"
           onPress={() => navigation.navigate("Historial")}
+          icon="clock"
         >
           Historial
         </Button>
@@ -81,6 +85,7 @@ const HomeScreen = () => {
           styles={styles.button}
           mode="contained"
           onPress={() => navigation.navigate("Settings")}
+          icon="cog"
         >
           Configuracion
         </Button>
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 35,
 
-    //  backgroundColor: '#d3d3d3',
+    // backgroundColor: Colors.secondary,
   },
   inputGroup: {
     flex: 1,

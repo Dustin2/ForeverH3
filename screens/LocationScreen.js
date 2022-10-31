@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   MD2Colors,
 } from "react-native-paper";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { Colors } from "../colors";
 
@@ -151,7 +152,7 @@ const LocationsScreen = () => {
     ///use this change screen after save data
 
     navigation.navigate("Inicio");
-   // startLoading();
+    // startLoading();
     ///serverTimestamp is used for save date to create document with firebase
   };
   /// sendData
@@ -261,6 +262,7 @@ const LocationsScreen = () => {
 
       <View style={styles.inputGroup}>
         <Button
+       
           mode="contained"
           buttonColor={Colors.success}
           //color={"green"}
@@ -268,8 +270,8 @@ const LocationsScreen = () => {
           onPress={() => {
             saveNewLocation();
             // startLoading();
-            
           }}
+          icon="cloud-upload"
         >
           Guardar
         </Button>

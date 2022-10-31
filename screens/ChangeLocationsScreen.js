@@ -263,14 +263,42 @@ export default function ChangeLocationsScreen() {
             {products.map((product, index) => {
               console.log(product);
               return (
-                <View key={index}>
-                  <TextInput>{product.id}</TextInput>
-                 {product.products.map((newProduct,index)=>{
-                  return (
-                    <TextInput
-                      key={index}></TextInput>
-                  )
-                 })}
+                <View key={product.id}>
+                  {product.products.map((newProduct, index) => {
+                    return (
+                      <ScrollView key={index}>
+                        <TextInput disabled={true}>{product.id}</TextInput>
+                        <Text>
+                          -------------------------------------------------------------------------------------------
+                        </Text>
+                        {/* <TextInput disabled={true}>
+                          {"id: " + newProduct.id}
+                        </TextInput> */}
+                        <TextInput disabled={true}>
+                          {"Producto: " + newProduct.Producto}
+                        </TextInput>
+                        <TextInput disabled={true}>
+                          {"EspacioOcupado: " + newProduct.EspacioOcupado}
+                        </TextInput>
+                        <TextInput disabled={true}>
+                          {"TipoDeEspacios: " + newProduct.TipoDeEspacios}
+                        </TextInput>
+                        <TextInput disabled={true}>
+                          {"UbicacionActual: " + newProduct.UbicacionActual}
+                        </TextInput>
+                        <TextInput disabled={true}>
+                          {"UltimaUbicacion: " + newProduct.UltimaUbicacion}
+                        </TextInput>
+                        <Button
+                          style={styles.button}
+                          mode="contained"
+                          buttonColor={Colors.success}
+                        >
+                          cambiar ubicacion
+                        </Button>
+                      </ScrollView>
+                    );
+                  })}
                 </View>
               );
             })}
@@ -333,7 +361,7 @@ export default function ChangeLocationsScreen() {
       </List.Accordion> */}
 
       {/* send button */}
-      <View style={styles.inputGroup}>
+      {/* <View style={styles.inputGroup}>
         <Button
           mode="contained"
           buttonColor={Colors.success}
@@ -343,7 +371,7 @@ export default function ChangeLocationsScreen() {
         >
           Guardar Productos
         </Button>
-      </View>
+      </View> */}
     </ScrollView>
   );
 }
@@ -351,6 +379,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    
 
     // flexDirection: "column",
     // justifyContent: "center",
@@ -385,6 +414,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 10,
+    marginTop: 20,
   },
   inputGroup: {
     flex: 1,

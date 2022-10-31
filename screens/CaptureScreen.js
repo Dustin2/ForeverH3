@@ -136,7 +136,7 @@ export default function CaptureScreen() {
   };
   const handleSuccess = ({ data }) => {
     setScannedd(true);
-    // console.log("dato escaneado:" + data);
+
     const newProduct = {
       Producto: data,
       EspacioOcupado: usedSpaces.usedspace,
@@ -147,6 +147,8 @@ export default function CaptureScreen() {
     };
     setProducts([...products, newProduct]);
     console.log(products);
+    setSpaces(spaces + (selectedColony.EspacioTotal - 1));
+    console.log(spaces);
   };
 
   //data saved in state
@@ -280,7 +282,7 @@ export default function CaptureScreen() {
                 >
                   Escanear de nuevo
                 </Button>
-
+                {/* 
                 <TextInput
                   label={"valor que ocupa"}
                   keyboardType="numeric"
@@ -288,7 +290,7 @@ export default function CaptureScreen() {
                     handleChangeText("usedspace" + number);
                   }}
                   value={usedSpaces.usedspace}
-                ></TextInput>
+                ></TextInput> */}
               </View>
             )}
           </List.Accordion>
@@ -305,6 +307,7 @@ export default function CaptureScreen() {
           onPress={() => {
             saveNewProductScan();
           }}
+          icon="cloud-upload"
         >
           Guardar Productos
         </Button>
