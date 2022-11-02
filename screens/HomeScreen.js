@@ -8,7 +8,6 @@ import {
   ScrollView,
 } from "react-native";
 import { TextInput, Button } from "react-native-paper";
-import { MaterialIcons } from "@expo/vector-icons";
 
 ///Navigation
 import { useNavigation } from "@react-navigation/core";
@@ -45,6 +44,7 @@ const HomeScreen = () => {
           mode="contained"
           onPress={() => navigation.navigate("Ubicaciones")}
           icon="map-marker-plus"
+          buttonColor={Colors.secondary}
         >
           Agregar Ubicacion
         </Button>
@@ -55,6 +55,7 @@ const HomeScreen = () => {
           mode="contained"
           onPress={() => navigation.navigate("Escaneo de productos")}
           icon="barcode-scan"
+          buttonColor={Colors.secondary}
         >
           Escaneo de Productos
         </Button>
@@ -65,6 +66,7 @@ const HomeScreen = () => {
           mode="contained"
           onPress={() => navigation.navigate("Cambio de ubicacion")}
           icon="map-marker-right"
+          buttonColor={Colors.secondary}
         >
           Cambio de Ubicacion
         </Button>
@@ -76,6 +78,7 @@ const HomeScreen = () => {
           mode="contained"
           onPress={() => navigation.navigate("Historial")}
           icon="clock"
+          buttonColor={Colors.secondary}
         >
           Historial
         </Button>
@@ -86,6 +89,7 @@ const HomeScreen = () => {
           mode="contained"
           onPress={() => navigation.navigate("Settings")}
           icon="cog"
+          buttonColor={Colors.secondary}
         >
           Configuracion
         </Button>

@@ -118,6 +118,7 @@ export default function CaptureScreen() {
   //   //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
   // };
 
+  const [counter, setCounter] = useState(1);
   ///change value
   const handleChangeText = (name, value, data) => {
     // setScannedd(true);
@@ -144,16 +145,21 @@ export default function CaptureScreen() {
       UltimaUbicacion: selectedColony.UltimaUbicacion,
       FechaCreacion: new Date(),
       TipoDeEspacios: selectedColony.TipoDeEspacios,
+      Sucursal: selectedColony.Sucursal
     };
     setProducts([...products, newProduct]);
-    console.log(products);
-    setSpaces(spaces + (selectedColony.EspacioTotal - 1));
-    console.log(spaces);
+    // console.log(products);
+
+    // (selectedColony.EspacioTotal)
+    setCounter(counter+1)
+    if(counter>=selectedColony.EspacioTotal){
+      alert("alert","espacios llenos")
+    }
+    console.log(counter);
   };
 
   //data saved in state
   const [products, setProducts] = useState([]);
-  const [spaces, setSpaces] = useState(0);
   const [usedSpaces, setUsedSpaces] = useState({
     usedspace: "",
   });
@@ -193,14 +199,7 @@ export default function CaptureScreen() {
       // IDUbicacion: selectedColony.ID,
       // Sucursal: selectedColony.Sucursal,
       products,
-      // Articulos: Data,
-      // UbicacionActual: selectedColony.ClaseTipo,
-      // UltimaUbicacion: selectedColony.ClaseTipo,
-      // EspacioTotal: selectedColony.EspacioTotal,
-      // EspaciosDisponibles: selectedColony.EspaciosDisponibles - kindofspace,
-      // TipoDeEspacios: selectedColony.TipoDeEspacios,
-      // Etiqueta: selectedColony.Etiqueta,
-      // FechaCreacion: new Date(),
+      
     });
 
     ///use this change screen after save data

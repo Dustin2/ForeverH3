@@ -205,75 +205,14 @@ export default function ChangeLocationsScreen() {
       <View>
         <List.Section title="Articulos escaneados">
           <List.Accordion title=" Articulos">
-            {/* <Picker
-              selectedValue={selectedColony}
-              onValueChange={(colonySel, indexColony, name, value) =>
-                updatePickerColony(colonySel, indexColony, name, value)
-              }
-            >
-              <Picker.Item
-                label="Selecciona el articulo a cambiar"
-                value=""
-                enabled={false}
-              />
-              {products.map((location, index) => {
-                return (
-                  <Picker.Item
-                    label={"Producto"}
-                    value={
-                      {
-                        // ID: location.products.id,
-                      }
-                    }
-                    key={index}
-                  />
-                );
-              })}
-            </Picker> */}
-            {/* <TextInput disabled={true}>{"ID: " + selectedColony.ID}</TextInput>
-            <TextInput disabled={true}>
-              {"IDUbicacion: " + selectedColony.IDUbicacion}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Producto: " + selectedColony.Articulo}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Ubicacion Actual: " +
-                selectedColony.UbicacionActual +
-                " (" +
-                selectedColony.Etiqueta +
-                " )"}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Nueva Ubicacion: " +
-                selectedColony.UltimaUbicacion +
-                " (" +
-                selectedColony.Etiqueta +
-                " )"}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Tipo de Espacio : " + selectedColony.TipoDeEspacios}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Espacio Total: " + selectedColony.EspacioTotal}
-            </TextInput>
-            <TextInput disabled={true}>
-              {"Espacios Disponibles: " + selectedColony.EspaciosDisponibles}
-            </TextInput> */}
             {products.map((product, index) => {
-              console.log(product);
+              // console.log(product);
               return (
                 <View key={product.id}>
                   {product.products.map((newProduct, index) => {
                     return (
                       <ScrollView key={index}>
                         <TextInput disabled={true}>{product.id}</TextInput>
-                        <Text>
-                          -------------------------------------------------------------------------------------------
-                        </Text>
-                        {/* <TextInput disabled={true}>
-                          {"id: " + newProduct.id}
-                        </TextInput> */}
                         <TextInput disabled={true}>
                           {"Producto: " + newProduct.Producto}
                         </TextInput>
@@ -289,6 +228,67 @@ export default function ChangeLocationsScreen() {
                         <TextInput disabled={true}>
                           {"UltimaUbicacion: " + newProduct.UltimaUbicacion}
                         </TextInput>
+                        <List.Accordion title=" Proxima Ubicacion">
+                          <Picker
+                            selectedValue={selectedColony1}
+                            onValueChange={(
+                              colonySel1,
+                              indexColony,
+                              name,
+                              value
+                            ) =>
+                              updatePickerColony1(
+                                colonySel1,
+                                indexColony,
+                                name,
+                                value
+                              )
+                            }
+                          >
+                            <Picker.Item
+                              label="Selecciona la nueva ubicacion"
+                              value=""
+                              enabled={false}
+                            />
+                            {registeredLocation.map((location, index) => {
+                              return (
+                                <Picker.Item
+                                  label={
+                                    location.ClaseTipo +
+                                    " (" +
+                                    location.Etiqueta +
+                                    ")"
+                                  }
+                                  value={{
+                                    UbicacionActual: location.ClaseTipo,
+                                    EspacioTotal: location.EspacioTotal,
+                                    EspaciosDisponibles:
+                                      location.EspaciosDisponibles,
+                                    TipoDeEspacios: location.TipoDeEspacios,
+                                    Etiqueta: location.Etiqueta,
+                                    // FechaCreacion: location.FechaCreacion,
+                                    UltimaUbicacion: location.UltimaUbicacion,
+                                  }}
+                                  key={index}
+                                />
+                              );
+                            })}
+                          </Picker>
+                          <TextInput disabled={true}>
+                            {"Ubicacion: " + selectedColony1.UltimaUbicacion}
+                          </TextInput>
+                          <TextInput disabled={true}>
+                            {"Tipo de Espacio : " +
+                              selectedColony1.TipoDeEspacios}
+                          </TextInput>
+                          <TextInput disabled={true}>
+                            {"Espacio Total: " + selectedColony1.EspacioTotal}
+                          </TextInput>
+                          <TextInput disabled={true}>
+                            {"Espacios Disponibles: " +
+                              selectedColony1.EspaciosDisponibles}
+                          </TextInput>
+                        </List.Accordion>
                         <Button
                           style={styles.button}
                           mode="contained"
@@ -306,59 +306,6 @@ export default function ChangeLocationsScreen() {
         </List.Section>
       </View>
       {/* new location */}
-      {/* <List.Accordion title=" Datos de la ubicacion seleccionada">
-        <Picker
-          selectedValue={selectedColony1}
-          onValueChange={(colonySel1, indexColony, name, value) =>
-            updatePickerColony1(colonySel1, indexColony, name, value)
-          }
-        >
-          <Picker.Item
-            label="Selecciona la nueva ubicacion"
-            value=""
-            enabled={false}
-          />
-          {registeredLocation.map((location, index) => {
-            return (
-              <Picker.Item
-                label={location.ClaseTipo + " (" + location.Etiqueta + ")"}
-                value={{
-                  ID: location.ID,
-                  Sucursal: location.Sucursal,
-                  UbicacionActual: location.ClaseTipo,
-                  EspacioTotal: location.EspacioTotal,
-                  EspaciosDisponibles: location.EspaciosDisponibles,
-                  TipoDeEspacios: location.TipoDeEspacios,
-                  Etiqueta: location.Etiqueta,
-                  FechaCreacion: location.FechaCreacion,
-                  UltimaUbicacion: location.UltimaUbicacion,
-                }}
-                key={index}
-              />
-            );
-          })}
-        </Picker>
-        <TextInput disabled={true}>{"ID: " + selectedColony1.ID}</TextInput>
-        <TextInput disabled={true}>
-          {"Ubicacion Actual: " +
-            selectedColony1.ClaseTipo +
-            " (" +
-            selectedColony1.Etiqueta +
-            " )"}
-        </TextInput>
-        <TextInput disabled={true}>
-          {"UltimaUbicacion: " + selectedColony1.UltimaUbicacion}
-        </TextInput>
-        <TextInput disabled={true}>
-          {"Tipo de Espacio : " + selectedColony1.TipoDeEspacios}
-        </TextInput>
-        <TextInput disabled={true}>
-          {"Espacio Total: " + selectedColony1.EspacioTotal}
-        </TextInput>
-        <TextInput disabled={true}>
-          {"Espacios Disponibles: " + selectedColony1.EspaciosDisponibles}
-        </TextInput>
-      </List.Accordion> */}
 
       {/* send button */}
       {/* <View style={styles.inputGroup}>
@@ -379,13 +326,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    
 
     // flexDirection: "column",
     // justifyContent: "center",
   },
   containerScanner: {
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     // flex: 1,
     flexDirection: "column",
     justifyContent: "center",
