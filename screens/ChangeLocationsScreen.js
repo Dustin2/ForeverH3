@@ -193,12 +193,8 @@ export default function ChangeLocationsScreen() {
     ///use this change screen after save data
     navigation.navigate("Inicio");
   };
-  // const [dataSelected,setDataSelected] = useState([]);
-  //   ///change value
-  //   const handleChangeText = (data, value) => {
-  //     setDataSelected([{ [data]: value }]);
-  //     //recibira un nombre y un valor estableciendo el nombre y valor recibido y actualizando
-  //   };
+
+  const [updateLocation, setUpdateLocation] = useState();
   return (
     <ScrollView style={styles.container}>
       {/* current location */}
@@ -211,7 +207,10 @@ export default function ChangeLocationsScreen() {
                 <View key={product.id}>
                   {product.products.map((newProduct, index) => {
                     return (
-                      <ScrollView key={index}>
+                      <ScrollView
+                        key={index}
+                        style={{ backgroundColor: "#ffff" }}
+                      >
                         <TextInput disabled={true}>{product.id}</TextInput>
                         <TextInput disabled={true}>
                           {"Producto: " + newProduct.Producto}
@@ -293,6 +292,23 @@ export default function ChangeLocationsScreen() {
                           style={styles.button}
                           mode="contained"
                           buttonColor={Colors.success}
+                          onPress={() => {
+                            const product = "";
+                            const location = "";
+                            setUpdateLocation(
+                              {
+                                id: product.id,
+                                Etiqueta: selectedColony1.Etiqueta,
+                                product:
+                                  "datos del articulo:" + newProduct.Producto,
+                              }
+                              // "datos del articulo:"+newProduct.Producto
+                            );
+                            // console.log(selectedColony1)
+                            // console.log("datos del articulo:"+newProduct.Producto)
+
+                            console.log(updateLocation);
+                          }}
                         >
                           cambiar ubicacion
                         </Button>
@@ -326,6 +342,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: "#eaeac2",
 
     // flexDirection: "column",
     // justifyContent: "center",

@@ -23,10 +23,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon2.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "com.dustin2.ForeverH3"
     },
     "web": {
       "favicon": "./assets/playstore.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "148824e0-66d5-473a-acf6-cf67830345cb"
+      }
     }
   }
 }

@@ -28,6 +28,7 @@ import {
   querySnapshot,
   doc,
   getDoc,
+  where
 } from "firebase/firestore";
 import { async } from "@firebase/util";
 import { LogBox } from "react-native";
@@ -44,7 +45,8 @@ export default function CaptureScreen() {
   const [registeredLocation, setRegisteredLocation] = useState([]);
   useEffect(() => {
     const collectionRef = collection(db, "ubicaciones");
-    const q = query(collectionRef, orderBy("FechaCreacion"));
+    // const q = query(collectionRef, orderBy("FechaCreacion"));
+    const q = query(collectionRef, where("Sucursal", "==",auth.currentUser?.email));
     const getRegisteredLocation = [];
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       console.log("querySnapshot unsusbscribe");
@@ -154,6 +156,7 @@ export default function CaptureScreen() {
     setCounter(counter+1)
     if(counter>=selectedColony.EspacioTotal){
       alert("alert","espacios llenos")
+      setScannedd(true);
     }
     console.log(counter);
   };
@@ -161,7 +164,7 @@ export default function CaptureScreen() {
   //data saved in state
   const [products, setProducts] = useState([]);
   const [usedSpaces, setUsedSpaces] = useState({
-    usedspace: "",
+    usedspace: "1",
   });
 
   const saveNewProductScan = () => {
@@ -318,7 +321,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-
+    backgroundColor: "#eaeac2"
     // flexDirection: "column",
     // justifyContent: "center",
   },

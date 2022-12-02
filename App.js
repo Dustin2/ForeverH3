@@ -1,5 +1,5 @@
 //Dependencies
-
+import { StatusBar } from "expo-status-bar";
 //Navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -72,6 +72,7 @@ export default function App() {
         <Stack.Screen name="Escaneo de productos" component={CaptureScreen} />
         <Stack.Screen name="Historial" component={HistoryScreen} />
       </Stack.Navigator>
+      <StatusBar style="auto" />
     </NavigationContainer>
   );
 }

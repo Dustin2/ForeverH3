@@ -31,6 +31,15 @@ const HomeScreen = () => {
   function close() {
     pickerRef.current.blur();
   }
+
+  const handleSignOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigation.replace("Login");
+      })
+      .catch((error) => alert(error.message));
+  };
   return (
     <ScrollView style={styles.container}>
       <View>
@@ -83,7 +92,7 @@ const HomeScreen = () => {
           Historial
         </Button>
       </View>
-      <View style={styles.inputGroup}>
+      {/* <View style={styles.inputGroup}>
         <Button
           styles={styles.button}
           mode="contained"
@@ -92,6 +101,16 @@ const HomeScreen = () => {
           buttonColor={Colors.secondary}
         >
           Configuracion
+        </Button>
+      </View> */}
+      <View style={styles.inputGroup}>
+        <Button
+          mode="contained"
+          buttonColor={Colors.error}
+          styles={styles.button}
+          onPress={handleSignOut}
+        >
+          Finalizar Sesion
         </Button>
       </View>
       {/* 
@@ -114,7 +133,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 35,
-
+    backgroundColor: "#eaeac2",
     // backgroundColor: Colors.secondary,
   },
   inputGroup: {

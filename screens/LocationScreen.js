@@ -71,11 +71,6 @@ const LocationsScreen = () => {
     return unsubscribe;
   }, []);
 
-  // useEffect(() => {
-  //   getDoc(doc(db, "ubicaciones", "LF7fCzuhXfnW3nrkPH7Q ")).then((res) =>
-  //     console.log({ id: res.id, ...res.data() })
-  //   );
-  // }, []);
 
   //state
   const [store, setStore] = useState({
@@ -157,14 +152,6 @@ const LocationsScreen = () => {
   };
   /// sendData
 
-  // const [showActivity, setShowActivity] = useState(false);
-
-  // const startLoading = () => {
-  //   setShowActivity(true);
-  //   setTimeout(() => {
-  //     setShowActivity(false);
-  //   }, 3000);
-  // };
 
   ///Update picker location
   const [selectedColony, setSelectedColony] = useState();
@@ -262,7 +249,6 @@ const LocationsScreen = () => {
 
       <View style={styles.inputGroup}>
         <Button
-       
           mode="contained"
           buttonColor={Colors.success}
           //color={"green"}
@@ -285,7 +271,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 35,
     textAlign: "center",
-
+    backgroundColor: "#eaeac2",
     //  backgroundColor: '#d3d3d3',
   },
   inputGroup: {
@@ -313,46 +299,3 @@ const styles = StyleSheet.create({
 });
 
 export default LocationsScreen;
-
-// import React from 'react';
-// import {View, StyleSheet, ProgressBarAndroid, Text} from 'react-native';
-
-// const App = () => {
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.example}>
-//         <Text>Circle Progress Indicator</Text>
-//         <ProgressBarAndroid />
-//       </View>
-//       <View style={styles.example}>
-//         <Text>Horizontal Progress Indicator</Text>
-//         <ProgressBarAndroid styleAttr="Horizontal" />
-//       </View>
-//       <View style={styles.example}>
-//         <Text>Colored Progress Indicator</Text>
-//         <ProgressBarAndroid styleAttr="Horizontal" color="#2196F3" />
-//       </View>
-//       <View style={styles.example}>
-//         <Text>Fixed Progress Value</Text>
-//         <ProgressBarAndroid
-//           styleAttr="Horizontal"
-//           indeterminate={false}
-//           progress={0.5}
-//         />
-//       </View>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   example: {
-//     marginVertical: 24,
-//   },
-// });
-
-// export default App;
