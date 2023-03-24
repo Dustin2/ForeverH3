@@ -1,162 +1,98 @@
 import React, { useState, useEffect } from "react";
+import QRCode from "react-native-qrcode-svg";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
   SafeAreaView,
-  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
-import { List, TextInput } from "react-native-paper";
-//firebase
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-  serverTimestamp,
-  querySnapshot,
-  doc,
-} from "firebase/firestore";
-import { auth, db } from "../firebase";
 
 //external dependencies
 import { Colors } from "../colors";
 import moment from "moment";
 
 const HistoryScreen = () => {
-  const [updates, setUpdates] = useState([]);
-  // useEffect(() => {
-  //   const collectionRef = collection(db, "Productos Escaneados");
-  //   const q = query(collectionRef, orderBy("createdDoc", "desc"));
-  //   const getData = [];
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     console.log("querySnapshot unsusbscribe");
+  const [inputText, setInputText] = useState("");
+  const [qrvalue, setQrvalue] = useState("");
 
-  //     querySnapshot.docs.map((doc) => {
-  //       const { storeName, products, createdDoc } = doc.data();
-  //       getData.push({
-  //         id: doc.id,
-  //         storeName,
-  //         products,
-  //         createdDoc,
-  //       });
-  //       // id: doc.id,
-  //       // storeName: doc.storeName,
-  //       // products: doc.products,
-  //       // createdDoc: doc.createdDoc,
-  //     });
-  //     setUpdates(getData);
-  //   });
-  //   return unsubscribe;
-  // }, []);
-  useEffect(() => {
-    const collectionRef = collection(db, "Cambios");
-    const q = query(collectionRef, orderBy("createdDoc", "desc"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      console.log("querySnapshot unsusbscribe");
-      setUpdates(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          currentLocation: doc.data().currentLocation,
-          newLocation: doc.data().newLocation,
-          products: doc.data().products,
-          createdDoc: doc.data().createdDoc,
-        }))
-      );
-    });
-    return unsubscribe;
-  }, []);
-
-  ///acordion
-  const [expanded, setExpanded] = useState(true);
-
-  const handlePress = () => setExpanded(!expanded);
   return (
-    <View styles={styles.container}>
-      <SafeAreaView>
-        {/* <ScrollView>
-          {updates.map((lastUpdates, index) => {
-            return (
-              <List.Section title={"Nombre de tienda"} key={lastUpdates.id}>
-                
-                <List.Accordion title={lastUpdates.storeName}>
-                  <List.Item title="Productos Escaneados"/>
-                  <Text>{lastUpdates.products + "\n"}</Text>
-                  <Text>{lastUpdates.createdDoc + "\n"}</Text>
-                </List.Accordion>
-                {console.log(lastUpdates)}
-              </List.Section>
-            );
-          })}
-        </ScrollView> */}
-        <ScrollView>
-          {updates.map((lastUpdates, index) => {
-            return (
-              <List.Section
-                title={
-                  "Ultima Actualizacion" +
-                  " " +
-                  lastUpdates.createdDoc.toDate().toLocaleTimeString("es-MX")
-                }
-                key={lastUpdates.id}
-              >
-                <List.Accordion title={lastUpdates.id}>
-                  <List.Item title={"Productos " + lastUpdates.products} />
-                  <List.Item
-                    title={
-                      "Localizacion Actual:" + " " + lastUpdates.currentLocation
-                    }
-                  />
-                  <List.Item
-                    title={
-                      "Localizacion Anterior:" + "" + lastUpdates.newLocation
-                    }
-                  />
-                </List.Accordion>
-              </List.Section>
-            );
-          })}
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <QRCode
+          value={qrvalue ? qrvalue : "NA"}
+          size={250}
+          color="black"
+          backgroundColor="white"
+          logo={{
+            url: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/logosmalltransparen.png",
+          }}
+          logoSize={30}
+          logoMargin={2}
+          logoBorderRadius={15}
+          // logoBackgroundColor="yellow"
+        />
+        <Text style={styles.textStyle}>
+          Please insert any value to generate QR code
+        </Text>
+        <TextInput
+          style={styles.textInputStyle}
+          onChangeText={(inputText) => setInputText(inputText)}
+          placeholder="Enter Any Value here"
+          value={inputText}
+        />
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => setQrvalue(inputText)}
+        >
+          <Text style={styles.buttonTextStyle}>Generate QR Code</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 35,
-    // justifyContent: "center",
-    backgroundColor: "#f1f1f1",
-    marginTop: 200,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    padding: 10,
   },
-
-  title: {
-    fontSize: 30,
-    color: "#181818",
-    fontWeight: "bold",
-  },
-  subTitle: {
+  titleStyle: {
     fontSize: 20,
-    color: "gray",
+    textAlign: "center",
+    margin: 10,
   },
-
-  TextInput: {
-    marginBottom: 15,
-    marginTop: 22,
+  textStyle: {
+    textAlign: "center",
+    margin: 10,
   },
-  text: { fontSize: 15, color: "gray" },
-  button: {
-    marginTop: 15,
-    marginBottom: 15,
+  textInputStyle: {
+    flexDirection: "row",
+    height: 40,
+    marginTop: 20,
+    marginLeft: 35,
+    marginRight: 35,
+    margin: 10,
+  },
+  buttonStyle: {
+    backgroundColor: "#51D8C7",
+    borderWidth: 0,
+    color: "#FFFFFF",
+    borderColor: "#51D8C7",
+    alignItems: "center",
+    borderRadius: 5,
+    marginTop: 30,
+    padding: 10,
+  },
+  buttonTextStyle: {
+    color: "#FFFFFF",
+    paddingVertical: 10,
+    fontSize: 16,
   },
 });
 
 export default HistoryScreen;
-{
-  /* <List.Accordion>
-{lastUpdates.products.map((item) => {
-  return <List.Item>{item.products}</List.Item>;
-})}
-</List.Accordion> */
-}

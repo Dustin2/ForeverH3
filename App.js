@@ -1,5 +1,6 @@
 //Dependencies
-import { StatusBar } from "expo-status-bar";
+import { StatusBar, KeyboardAvoidingView } from "expo-status-bar";
+import * as NavigationBar from "expo-navigation-bar";
 //Navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -17,11 +18,13 @@ import ManageAccount from "./screens/ManageAccount";
 
 //External Dependencies
 import { Colors } from "./colors";
+import GenerateQR from "./screens/generateQR";
 
 ///create function for navigate in the middle of screens
 const Stack = createNativeStackNavigator();
-
 export default function App() {
+  // NavigationBar.setBackgroundColorAsync("white");
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -71,6 +74,7 @@ export default function App() {
         />
         <Stack.Screen name="Escaneo de productos" component={CaptureScreen} />
         <Stack.Screen name="Historial" component={HistoryScreen} />
+        <Stack.Screen name="generador de qr" component={GenerateQR} />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>

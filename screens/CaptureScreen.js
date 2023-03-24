@@ -28,7 +28,7 @@ import {
   querySnapshot,
   doc,
   getDoc,
-  where
+  where,
 } from "firebase/firestore";
 import { async } from "@firebase/util";
 import { LogBox } from "react-native";
@@ -46,7 +46,10 @@ export default function CaptureScreen() {
   useEffect(() => {
     const collectionRef = collection(db, "ubicaciones");
     // const q = query(collectionRef, orderBy("FechaCreacion"));
-    const q = query(collectionRef, where("Sucursal", "==",auth.currentUser?.email));
+    const q = query(
+      collectionRef,
+      where("Sucursal", "==", auth.currentUser?.email)
+    );
     const getRegisteredLocation = [];
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       console.log("querySnapshot unsusbscribe");
@@ -147,15 +150,15 @@ export default function CaptureScreen() {
       UltimaUbicacion: selectedColony.UltimaUbicacion,
       FechaCreacion: new Date(),
       TipoDeEspacios: selectedColony.TipoDeEspacios,
-      Sucursal: selectedColony.Sucursal
+      Sucursal: selectedColony.Sucursal,
     };
     setProducts([...products, newProduct]);
     // console.log(products);
 
     // (selectedColony.EspacioTotal)
-    setCounter(counter+1)
-    if(counter>=selectedColony.EspacioTotal){
-      alert("alert","espacios llenos")
+    setCounter(counter + 1);
+    if (counter >= selectedColony.EspacioTotal) {
+      alert("alert", "espacios llenos");
       setScannedd(true);
     }
     console.log(counter);
@@ -202,7 +205,6 @@ export default function CaptureScreen() {
       // IDUbicacion: selectedColony.ID,
       // Sucursal: selectedColony.Sucursal,
       products,
-      
     });
 
     ///use this change screen after save data
@@ -314,6 +316,7 @@ export default function CaptureScreen() {
           Guardar Productos
         </Button>
       </View>
+      <View></View>
     </ScrollView>
   );
 }
@@ -321,7 +324,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#eaeac2"
+    backgroundColor: "#eaeac2",
     // flexDirection: "column",
     // justifyContent: "center",
   },

@@ -50,11 +50,8 @@ export default function SignUp({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={60}
-      >
+    <KeyboardAvoidingView behavior={"position"} style={styles.container}>
+      <View style={styles.inner}>
         <Text style={styles.title}>Registarse</Text>
         <Text>{validationMessage}</Text>
         <TextInput
@@ -108,18 +105,18 @@ export default function SignUp({ navigation }) {
             Iniciar
           </Button>
         </View>
-      </KeyboardAvoidingView>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 35,
+    padding: 20,
     // justifyContent: "center",
     backgroundColor: "#f1f1f1",
-    marginTop: 200,
+    marginTop: 318,
   },
 
   title: {
@@ -133,8 +130,8 @@ const styles = StyleSheet.create({
   },
 
   TextInput: {
-    marginBottom: 12,
-    marginTop: 20,
+    marginBottom: 15,
+    marginTop: 10,
   },
   text: { fontSize: 15, color: "gray" },
   button: {

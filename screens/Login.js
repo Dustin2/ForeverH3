@@ -5,13 +5,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 
 import React, { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { TextInput, Button } from "react-native-paper";
-import { unstable_createElement as createElement } from 'react-native-web'; 
+import { unstable_createElement as createElement } from "react-native-web";
 
 ///externals dependences
 import { Colors } from "../colors";
@@ -48,12 +50,10 @@ export default function Login({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View>
+    <KeyboardAvoidingView behavior={"position"} style={styles.container}>
+      <View style={styles.inner}>
         <Text style={styles.title}>Hola</Text>
         <Text style={styles.subTitle}>Inicia sesión en tu cuenta</Text>
-      </View>
-      <View>
         <TextInput
           style={styles.TextInput}
           activeOutlineColor={Colors.accent}
@@ -62,8 +62,6 @@ export default function Login({ navigation }) {
           value={email}
           onChangeText={setEmail}
         />
-      </View>
-      <View>
         <TextInput
           style={styles.TextInput}
           activeOutlineColor={Colors.accent}
@@ -73,11 +71,7 @@ export default function Login({ navigation }) {
           value={password}
           onChangeText={setPassword}
         />
-      </View>
-      <View>
-        {/* <Text style={styles.text}>¿Olvidaste tu Contraseña?</Text> */}
-      </View>
-      <View>
+
         <Button
           style={styles.button}
           mode="contained"
@@ -86,65 +80,40 @@ export default function Login({ navigation }) {
         >
           Iniciar Sesion
         </Button>
-        <View>
-          <Text style={styles.text}>¿No tienes cuenta? </Text>
+        <Text style={styles.text}>¿No tienes cuenta? </Text>
 
-          <Button
-            style={styles.button}
-            mode="contained"
-            buttonColor={Colors.primary}
-            dark={true}
-            onPress={() => navigation.navigate("SignUp")}
-          >
-            Registarse
-          </Button>
-        </View>
-        <View>
-          <Button
-            style={styles.button}
-            mode="contained"
-            buttonColor={Colors.primary}
-            dark={true}
-            onPress={() => navigation.navigate("ResetPassword")}
-          >
-            ¿ Olvidaste tu contraseña?
-          </Button>
-        </View>
-        {/* <Button title="Login" onPress={login} color="#f7b267" /> */}
+        <Button
+          style={styles.button}
+          mode="contained"
+          buttonColor={Colors.primary}
+          dark={true}
+          onPress={() => navigation.navigate("SignUp")}
+        >
+          Registarse
+        </Button>
+        <Button
+          style={styles.button}
+          mode="contained"
+          buttonColor={Colors.primary}
+          dark={true}
+          onPress={() => navigation.navigate("ResetPassword")}
+        >
+          ¿ Olvidaste tu contraseña?
+        </Button>
       </View>
-    </View>
 
-    /* <KeyboardAvoidingView 
-        style={AppStyles.backgroundCover} 
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={60}>
-        <Text style={[AppStyles.lightText, AppStyles.header]}>Login</Text>
-        <Text style={AppStyles.errorText}>{errorMessage}</Text>
-        <TextInput 
-          style={[AppStyles.textInput, AppStyles.lightTextInput, AppStyles.lightText]} 
-          placeholder='Email' 
-          placeholderTextColor="#BEBEBE"
-          value={email}
-          onChangeText={setEmail} />
-        <TextInput 
-          style={[AppStyles.textInput, AppStyles.lightTextInput, AppStyles.lightText]} 
-          placeholder='Password' 
-          placeholderTextColor="#BEBEBE" 
-          secureTextEntry={true} 
-          value={password} 
-          onChangeText={setPassword} />
-       
-      </KeyboardAvoidingView> */
+      {/* <Button title="Login" onPress={login} color="#f7b267" /> */}
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 35,
+    padding: 20,
     // justifyContent: "center",
     backgroundColor: "#f1f1f1",
-    marginTop: 200,
+    marginTop: 318,
   },
 
   title: {
@@ -159,7 +128,7 @@ const styles = StyleSheet.create({
 
   TextInput: {
     marginBottom: 15,
-    marginTop: 22,
+    marginTop: 10,
   },
   text: { fontSize: 15, color: "gray" },
   button: {
